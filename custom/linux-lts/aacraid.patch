@@ -1,0 +1,58 @@
+diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
+index 3fa03230f6ba..ddfa78c05728 100644
+--- a/drivers/scsi/aacraid/aacraid.h
++++ b/drivers/scsi/aacraid/aacraid.h
+@@ -2740,6 +2740,17 @@ static inline int aac_is_src(struct aac_dev *dev)
+ 	return 0;
+ }
+ 
++static inline int aac_is_srcv(struct aac_dev *dev)
++{
++	u16 device = dev->pdev->device;
++
++	if (device == PMC_DEVICE_S7 ||
++	    device == PMC_DEVICE_S8)
++		return 1;
++
++	return 0;
++}
++
+ static inline int aac_supports_2T(struct aac_dev *dev)
+ {
+ 	return (dev->adapter_info.options & AAC_OPT_NEW_COMM_64);
+diff --git a/drivers/scsi/aacraid/comminit.c b/drivers/scsi/aacraid/comminit.c
+index d4fcfa1e54e0..1918e46ae3ec 100644
+--- a/drivers/scsi/aacraid/comminit.c
++++ b/drivers/scsi/aacraid/comminit.c
+@@ -349,8 +349,7 @@ int aac_send_shutdown(struct aac_dev * dev)
+ 	/* FIB should be freed only after getting the response from the F/W */
+ 	if (status != -ERESTARTSYS)
+ 		aac_fib_free(fibctx);
+-	if (aac_is_src(dev) &&
+-	     dev->msi_enabled)
++	if (aac_is_srcv(dev) && dev->msi_enabled)
+ 		aac_set_intx_mode(dev);
+ 	return status;
+ }
+@@ -605,7 +604,7 @@ struct aac_dev *aac_init_adapter(struct aac_dev *dev)
+ 		dev->max_fib_size = status[1] & 0xFFE0;
+ 		host->sg_tablesize = status[2] >> 16;
+ 		dev->sg_tablesize = status[2] & 0xFFFF;
+-		if (aac_is_src(dev)) {
++		if (aac_is_srcv(dev)) {
+ 			if (host->can_queue > (status[3] >> 16) -
+ 					AAC_NUM_MGT_FIB)
+ 				host->can_queue = (status[3] >> 16) -
+diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
+index 644f7f5c61a2..c8badc9d9ae7 100644
+--- a/drivers/scsi/aacraid/linit.c
++++ b/drivers/scsi/aacraid/linit.c
+@@ -1835,7 +1835,7 @@ static int aac_acquire_resources(struct aac_dev *dev)
+ 	aac_adapter_enable_int(dev);
+ 
+ 
+-	if (aac_is_src(dev))
++	if (aac_is_srcv(dev))
+ 		aac_define_int_mode(dev);
+ 
+ 	if (dev->msi_enabled)
