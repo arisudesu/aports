@@ -1,0 +1,19 @@
+# Contributor:
+# Maintainer:
+pkgname=arcconf-static
+pkgver=2.05.22932
+pkgrel=0
+pkgdesc="Microsemi Adaptec RAID Controller Command Line Utility"
+url="https://www.microsemi.com/"
+arch="x86_64"
+license="custom"
+source="https://download.adaptec.com/raid/storage_manager/arcconf_v${pkgver//./_}.zip"
+options="!strip !check !archcheck !tracedeps !spdx"
+
+package() {
+	install -D -m0755 "$srcdir"/linux_x64/static_arcconf/cmdline/arcconf "$pkgdir"/usr/bin/arcconf
+}
+
+sha512sums="
+73b30ac06301ab97b42ff86f92a11968b4e4f9fac83bee4cdb57c0096ccdf9bec1adbd1d4b192dcaf5d112b8a5181a52e291df1f5a10e4aa1d25e72070119c96  arcconf_v2_05_22932.zip
+"
