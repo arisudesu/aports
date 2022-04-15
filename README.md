@@ -1,16 +1,26 @@
 # Setup
 
+Initial setup:
 ```
 # apk add abuild git
 # adduser -D -h /var/abuild abuilduser
 # addgroup abuilduser abuild
 # su abuilduser -c 'abuild-keygen -a -n'
-# su abuilduser -c 'cd ~ && git clone https://github.com/arisudesu/apkbuilds.git apkbuilds'
+```
+
+Init repo:
+```
+# su abuilduser -c 'git clone https://github.com/arisudesu/apkbuilds.git ~/apkbuilds'
+```
+
+Update repo:
+```
+# su abuilduser -c 'cd ~/apkbuilds && git fetch --all && git reset --hard origin/master'
 ```
 
 Building a package:
 ```
-# su abuilduser -c 'cd ~/apkbuilds/custom/linux-lts && abuild -r'
+# su abuilduser -c 'cd ~/apkbuilds/custom/<package> && abuild -r'
 ```
 
 Then copy key from `/var/abuild/abuild` to `/etc/apk/keys`.  
