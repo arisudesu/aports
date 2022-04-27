@@ -1,0 +1,52 @@
+# Contributor:
+# Maintainer:
+pkgname=forge-server
+pkgver=14.23.5.2860
+pkgrel=0
+pkgdesc="Minecraft Forge server"
+url="https://minecraftforge.net/"
+arch="noarch"
+license="custom"
+depends="openjdk8-jre-base dtach"
+makedepends="openjdk8-jre-base"
+install="$pkgname.pre-install"
+options="!check"
+pkgusers="forge"
+pkggroups="forge"
+subpackages="$pkgname-openrc"
+_mcver="1.12.2"
+_fullver="${_mcver}-${pkgver}"
+source="https://maven.minecraftforge.net/net/minecraftforge/forge/${_fullver}/forge-${_fullver}-installer.jar
+        $pkgname.bin
+        $pkgname.initd
+        $pkgname.confd"
+builddir="$srcdir/"$pkgname-$pkgver
+
+build() {
+    mkdir -p "$builddir"
+    cd "$builddir"
+
+    JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk java -jar \
+        "$srcdir"/forge-${_fullver}-installer.jar --installServer
+}
+
+package() {
+    installdir="$pkgdir"/usr/share/forge-server
+
+    install -m 644 -D "$builddir/"forge-${_fullver}.jar "$installdir"/forge-server.jar
+    install -m 644 -D "$builddir/"minecraft_server.${_mcver}.jar "$installdir"/minecraft_server.${_mcver}.jar
+
+    cd "$builddir"/libraries
+    find . -type f -exec install -m 644 -D {} "$installdir"/libraries/{} \;
+
+    install -m 755 -D "$srcdir"/$pkgname.bin   "$pkgdir"/usr/bin/$pkgname
+    install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+    install -m 755 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+}
+
+sha512sums="
+da2f77a7f7530083b53c76ff120448b46cb548f79ac2c24fbfde2a4f18b563997fd3fb8bd6c4cd58884afdd742d9fe34b6447a0cb3923a07ec939133339cb667  forge-1.12.2-14.23.5.2860-installer.jar
+e9e88ed89d4d3ec9964b9c8050d4c221331529b032645ac498291273b0f0352bcc64a67172644e1136d907ae66adf7c850f0986fb46f204ff38d23a0f5e91c4c  forge-server.bin
+c9208de1c676a40b4a5e85527e8f5246c6f68b7e0a157f41c7c90499e1b0bb17713c9d2660204bde03424c089a4d7d87f2c405e65dedae77dd309c4d4fd70f5b  forge-server.initd
+352d54ae82921d3284709864b4d5b07b2554de6c666e7b7daa13d5e8d4bbb2e195dfcf4035956492411ba90cea159ef58010940336ffe18592ec8600f182a8ad  forge-server.confd
+"

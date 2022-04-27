@@ -1,0 +1,65 @@
+#!/sbin/openrc-run
+# Copyright 1999-2021 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+if [ "${SVCNAME}" = "forge-server" ]; then
+	instance="default"
+else
+	instance="${SVCNAME#forge-server.}"
+fi
+
+dtach_tmpfile="$(mktemp -u)"
+forge_command="/usr/bin/forge-server"
+forge_logs="/var/log/forge-server"
+forge_logs_instance="${forge_logs}/${instance}"
+forge_path="/var/lib/forge-server"
+forge_path_instance="${forge_path}/${instance}"
+name="Minecraft Forge Server (World: ${instance})"
+pidfile="/run/forge-server.${instance}.pid"
+start_stop_daemon_args="--chdir ${forge_path_instance} --env JAVA_OPTS='${FORGE_OPTS}'"
+
+description_attach="Attaches to the session (interactive console) of the Minecraft Forge server"
+extra_started_commands="attach"
+
+command="/usr/bin/dtach"
+command_background="true"
+command_args="-N ${dtach_tmpfile} ${forge_command} ${FORGE_OPTS}"
+command_group="forge"
+command_user="forge"
+
+depend() {
+	use net
+}
+
+start_pre() {
+	checkpath -d -o "${command_user}:${command_group}" -q "${forge_path}" "${forge_path_instance}"
+
+	checkpath -f -o "${command_user}:${command_group}" -q "${forge_path_instance}"/eula.txt
+	echo "eula=true" > "${forge_path_instance}"/eula.txt
+
+	checkpath -d -o "${command_user}:${command_group}" -q "${forge_logs}" "${forge_logs_instance}"
+
+	if [ ! -L "${forge_path_instance}"/logs ]; then
+		cd "${forge_path_instance}" && ln -s "${forge_logs_instance}" logs
+	fi
+
+	if [ -z "${FORGE_OPTS}" ]; then
+		eerror "You must define 'FORGE_OPTS' in '/etc/conf.d/${SVCNAME}'!"
+		return 1
+	fi
+
+	# This is needed to initialize MC console properly on start
+	export COLUMNS=80 ROWS=25
+}
+
+attach() {
+	pidnumber="$(cat ${pidfile})"
+	dtach_tmpfile="$(cat /proc/${pidnumber}/cmdline | tr '\0' ' ' | awk '{print $3}')"
+
+	if [ -S "${dtach_tmpfile}" ]; then
+		eval "${command}" -a "${dtach_tmpfile}" "${DTACH_OPTS}"
+	else
+		eerror "The determined socket file for dtach could not be found!"
+		eerror "Did the process crash?"
+	fi
+}

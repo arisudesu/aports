@@ -1,0 +1,4 @@
+#!/bin/sh
+addgroup -S forge 2>/dev/null
+adduser -S -D -h /var/lib/forge-server -s /sbin/nologin -G forge -g forge forge 2>/dev/null
+exit 0
