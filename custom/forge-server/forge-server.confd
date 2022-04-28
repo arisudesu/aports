@@ -9,4 +9,4 @@ DTACH_OPTS="-e '^D' -r none"
 # Java options for your started server
 # You should at least define some memory settings (-Xms, -Xmx),
 # for maximum memory, as the java default is far to low for Minecraft
-FORGE_OPTS="-Xms2048m -Xmx2048m"
+JAVA_OPTS="-Xms2048m -Xmx2048m"

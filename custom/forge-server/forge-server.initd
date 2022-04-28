@@ -16,14 +16,14 @@ forge_path="/var/lib/forge-server"
 forge_path_instance="${forge_path}/${instance}"
 name="Minecraft Forge Server (World: ${instance})"
 pidfile="/run/forge-server.${instance}.pid"
-start_stop_daemon_args="--chdir ${forge_path_instance} --env JAVA_OPTS='${FORGE_OPTS}'"
+start_stop_daemon_args="--chdir ${forge_path_instance} --env JAVA_OPTS='${JAVA_OPTS}' --env COLUMNS=80 --env ROWS=25"
 
 description_attach="Attaches to the session (interactive console) of the Minecraft Forge server"
 extra_started_commands="attach"
 
 command="/usr/bin/dtach"
 command_background="true"
-command_args="-N ${dtach_tmpfile} ${forge_command} ${FORGE_OPTS}"
+command_args="-N ${dtach_tmpfile} ${forge_command} ${JAVA_OPTS}"
 command_group="forge"
 command_user="forge"
 
@@ -40,16 +40,13 @@ start_pre() {
 	checkpath -d -o "${command_user}:${command_group}" -q "${forge_logs}" "${forge_logs_instance}"
 
 	if [ ! -L "${forge_path_instance}"/logs ]; then
-		cd "${forge_path_instance}" && ln -s "${forge_logs_instance}" logs
+		cd "${forge_path_instance}" && ln -s -T ../../../log/forge-server/"${instance}" logs
 	fi
 
-	if [ -z "${FORGE_OPTS}" ]; then
-		eerror "You must define 'FORGE_OPTS' in '/etc/conf.d/${SVCNAME}'!"
+	if [ -z "${JAVA_OPTS}" ]; then
+		eerror "You must define 'JAVA_OPTS' in '/etc/conf.d/${SVCNAME}'!"
 		return 1
 	fi
-
-	# This is needed to initialize MC console properly on start
-	export COLUMNS=80 ROWS=25
 }
 
 attach() {

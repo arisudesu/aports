@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=forge-server
 pkgver=14.23.5.2860
-pkgrel=0
+pkgrel=1
 pkgdesc="Minecraft Forge server"
 url="https://minecraftforge.net/"
 arch="noarch"
@@ -41,12 +41,12 @@ package() {
 
     install -m 755 -D "$srcdir"/$pkgname.bin   "$pkgdir"/usr/bin/$pkgname
     install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
-    install -m 755 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+    install -m 644 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
 }
 
 sha512sums="
 da2f77a7f7530083b53c76ff120448b46cb548f79ac2c24fbfde2a4f18b563997fd3fb8bd6c4cd58884afdd742d9fe34b6447a0cb3923a07ec939133339cb667  forge-1.12.2-14.23.5.2860-installer.jar
 e9e88ed89d4d3ec9964b9c8050d4c221331529b032645ac498291273b0f0352bcc64a67172644e1136d907ae66adf7c850f0986fb46f204ff38d23a0f5e91c4c  forge-server.bin
-c9208de1c676a40b4a5e85527e8f5246c6f68b7e0a157f41c7c90499e1b0bb17713c9d2660204bde03424c089a4d7d87f2c405e65dedae77dd309c4d4fd70f5b  forge-server.initd
-352d54ae82921d3284709864b4d5b07b2554de6c666e7b7daa13d5e8d4bbb2e195dfcf4035956492411ba90cea159ef58010940336ffe18592ec8600f182a8ad  forge-server.confd
+14167821c5f629666cb3ef93a9aba13212266d6dbb6a362dc12cec4a660ea1bdafdd64d179637ae057b074476c01e36bf46ab0984ec51ed5fe617e54aea2a10b  forge-server.initd
+28ef6628dfe8f26e2f2d2fc6b1297443c88af539fb2854294a53885344cbe9b7877a85dd44df711c221296fe5bcea32d9982ae60549004c037412294c52ac558  forge-server.confd
 "
