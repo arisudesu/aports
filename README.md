@@ -20,7 +20,7 @@ Update repo:
 
 Building a package:
 ```
-# su abuilduser -c 'cd ~/apkbuilds/custom/<package> && abuild -r'
+# su abuilduser -c 'cd ~/apkbuilds/custom/<package> && abuild -r && abuild cleanoldpkg'
 ```
 
 Then copy key from `/var/abuild/abuild` to `/etc/apk/keys`.  
