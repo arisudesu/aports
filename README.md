@@ -15,7 +15,7 @@ Init repo:
 
 Update repo:
 ```
-# su abuilduser -c 'cd ~/apkbuilds && git fetch --all && git reset --hard origin/master'
+# su abuilduser -c 'cd ~/apkbuilds && git fetch --all && git checkout -f origin/master'
 ```
 
 Building a package:
