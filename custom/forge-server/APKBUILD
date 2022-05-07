@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=forge-server
 pkgver=14.23.5.2860
-pkgrel=1
+pkgrel=2
 pkgdesc="Minecraft Forge server"
 url="https://minecraftforge.net/"
 arch="noarch"
@@ -10,7 +10,7 @@ license="custom"
 depends="openjdk8-jre-base dtach"
 makedepends="openjdk8-jre-base"
 install="$pkgname.pre-install"
-options="!check"
+options="!check net"
 pkgusers="forge"
 pkggroups="forge"
 subpackages="$pkgname-openrc"
