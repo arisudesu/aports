@@ -10,17 +10,17 @@ Initial setup:
 
 Init repo:
 ```
-# su abuilduser -c 'git clone https://github.com/arisudesu/apkbuilds.git ~/apkbuilds'
+# su abuilduser -c 'git clone https://github.com/arisudesu/aports.git ~/aports'
 ```
 
 Update repo:
 ```
-# su abuilduser -c 'cd ~/apkbuilds && git fetch --all && git checkout -f origin/master'
+# su abuilduser -c 'cd ~/aports && git fetch --all && git checkout -f origin/master'
 ```
 
 Building a package:
 ```
-# su abuilduser -c 'cd ~/apkbuilds/custom/<package> && abuild -r && abuild cleanoldpkg'
+# su abuilduser -c 'cd ~/aports/custom/<package> && abuild -r && abuild cleanoldpkg'
 ```
 
 Then copy key from `/var/abuild/abuild` to `/etc/apk/keys`.  
