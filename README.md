@@ -15,7 +15,7 @@ Init repo:
 
 Update repo:
 ```
-# su abuilduser -c 'cd ~/aports && git fetch --all && git checkout -f origin/master'
+# su abuilduser -c 'cd ~/aports && git fetch --all && git checkout -B master && git reset --hard origin/master'
 ```
 
 Building a package:
