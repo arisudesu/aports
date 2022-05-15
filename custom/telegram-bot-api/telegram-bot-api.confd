@@ -4,11 +4,11 @@ TELEGRAM_API_ID=""
 TELEGRAM_API_HASH=""
 
 # HTTP listening port (default is 8081)
-HTTP_IP_ADDRESS="0.0.0.0"
+HTTP_PORT="8081"
 
 # Local IP address, HTTP connections to which will be accepted
 # By default, connections to any local IPv4 address are accepted
-HTTP_PORT="8081"
+HTTP_IP_ADDRESS="0.0.0.0"
 
 # Extra arguments passed to binary
 EXTRA_ARGS=""

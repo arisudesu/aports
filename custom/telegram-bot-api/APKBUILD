@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=telegram-bot-api
 pkgver=6.0.2
-pkgrel=0
+pkgrel=1
 pkgdesc="Telegram Bot API server"
 url="https://github.com/tdlib/telegram-bot-api"
 arch="all !s390x" # tdlib fails to build on big-endian
