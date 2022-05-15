@@ -1,0 +1,53 @@
+# Contributor:
+# Maintainer:
+pkgname=telegram-bot-api
+pkgver=6.0.2
+pkgrel=0
+pkgdesc="Telegram Bot API server"
+url="https://github.com/tdlib/telegram-bot-api"
+arch="all !s390x" # tdlib fails to build on big-endian
+license="BSL-1.0"
+options="!check" # No test suite from upstream
+pkgusers="$pkgname"
+pkggroups="$pkgname"
+makedepends="cmake openssl-dev zlib-dev gperf linux-headers"
+install="$pkgname.pre-install"
+subpackages="$pkgname-doc $pkgname-openrc"
+_commit=8a0f1dd730aa41ab7b792b9ff03d92b1c5022c9f
+_tdlib_commit=ab3a8282d4ee307d341071267ef1090b1a941478
+source="$pkgname-$_commit.tar.gz::https://github.com/tdlib/telegram-bot-api/archive/$_commit.tar.gz
+		td-$_tdlib_commit.tar.gz::https://github.com/tdlib/td/archive/$_tdlib_commit.tar.gz
+		$pkgname.initd
+		$pkgname.confd"
+builddir="$srcdir/$pkgname-$_commit"
+
+prepare() {
+	mv -T "$srcdir/td-$_tdlib_commit" "$srcdir/$pkgname-$_commit/td"
+}
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DCMAKE_INSTALL_PREFIX:PATH=/usr
+
+	cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+
+	install -m644 -D -t "$pkgdir/usr/share/licenses/$pkgname" \
+		LICENSE_1_0.txt
+	install -m644 -D -t "$pkgdir/usr/share/doc/$pkgname" \
+		README.md
+
+	install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -m 644 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+}
+
+sha512sums="
+4dd0fdea6a68546a19047eb91e1b9b726ec019ba9233b29402e76a4ce28f2b459294236db6cab4ff7a94ec5113c682743dc47ad35c5ce79c87047ba033aaa558  telegram-bot-api-8a0f1dd730aa41ab7b792b9ff03d92b1c5022c9f.tar.gz
+d02bc19ce92afc1495467807aaff949e24f207ea6a092fa7755b593e8047a5cf3d7c14d5f2840e90999030c5b21028970eb3ddd4cdccc3b0c0d4ccd071b05425  td-ab3a8282d4ee307d341071267ef1090b1a941478.tar.gz
+ebc0c0a0c5dbdb2832152484e4e7ad14c77ab1f8815d0822c20fdbab727f2808664843cfd152a34aa27de4dac215a11d485262f8b23041e9ec71e2d35430b1e1  telegram-bot-api.initd
+f893f6829dc655bce4a21a3a8f0ed88ed4cc21d5f4afb06fa7e3293b930a67e8fbd2e8b2e74ddfa723f87465c6fc988a28298137d669cbb483a764989303102a  telegram-bot-api.confd
+"

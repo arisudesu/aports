@@ -1,0 +1,40 @@
+#!/sbin/openrc-run
+
+: "${HTTP_IP_ADDRESS:=0.0.0.0}"
+: "${HTTP_PORT:=8081}"
+
+name="Telegram Bot API server"
+command=/usr/bin/telegram-bot-api
+command_args="--http-ip-address ${HTTP_IP_ADDRESS} --http-port ${HTTP_PORT} ${EXTRA_ARGS}"
+command_background=true
+command_user=telegram-bot-api
+command_group=telegram-bot-api
+pidfile="/run/${RC_SVCNAME}.pid"
+
+working_dir=/var/lib/telegram-bot-api
+
+start_stop_daemon_args="
+	--chdir ${working_dir}
+	--env TELEGRAM_API_ID=${TELEGRAM_API_ID}
+	--env TELEGRAM_API_HASH=${TELEGRAM_API_HASH}"
+
+depend() {
+	need net
+}
+
+start_pre() {
+	checkconfig || return 1
+	checkpath -d -o "${command_user}:${command_group}" -m 0750 -q "${working_dir}"
+}
+
+checkconfig() {
+	if [ -z "${TELEGRAM_API_ID}" ]; then
+		eerror "TELEGRAM_API_ID not configured"
+		return 1
+	fi
+
+	if [ -z "${TELEGRAM_API_HASH}" ]; then
+		eerror "TELEGRAM_API_HASH not configured"
+		return 1
+	fi
+}

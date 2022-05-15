@@ -1,0 +1,4 @@
+#!/bin/sh
+addgroup -S telegram-bot-api 2>/dev/null
+adduser -S -D -h /var/lib/telegram-bot-api -s /sbin/nologin -G telegram-bot-api -g telegram-bot-api telegram-bot-api 2>/dev/null
+exit 0
