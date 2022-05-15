@@ -1,0 +1,7 @@
+[APKBUILD]
+indent_style=tab
+insert_final_newline = true
+
+[*.{initd,confd}]
+indent_style=tab
+insert_final_newline = true

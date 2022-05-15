@@ -17,31 +17,31 @@ subpackages="$pkgname-openrc"
 _mcver="1.12.2"
 _fullver="${_mcver}-${pkgver}"
 source="https://maven.minecraftforge.net/net/minecraftforge/forge/${_fullver}/forge-${_fullver}-installer.jar
-        $pkgname.bin
-        $pkgname.initd
-        $pkgname.confd"
+		$pkgname.bin
+		$pkgname.initd
+		$pkgname.confd"
 builddir="$srcdir/"$pkgname-$pkgver
 
 build() {
-    mkdir -p "$builddir"
-    cd "$builddir"
+	mkdir -p "$builddir"
+	cd "$builddir"
 
-    JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk java -jar \
-        "$srcdir"/forge-${_fullver}-installer.jar --installServer
+	JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk java -jar \
+		"$srcdir"/forge-${_fullver}-installer.jar --installServer
 }
 
 package() {
-    installdir="$pkgdir"/usr/share/forge-server
+	installdir="$pkgdir"/usr/share/forge-server
 
-    install -m 644 -D "$builddir/"forge-${_fullver}.jar "$installdir"/forge-server.jar
-    install -m 644 -D "$builddir/"minecraft_server.${_mcver}.jar "$installdir"/minecraft_server.${_mcver}.jar
+	install -m 644 -D "$builddir/"forge-${_fullver}.jar "$installdir"/forge-server.jar
+	install -m 644 -D "$builddir/"minecraft_server.${_mcver}.jar "$installdir"/minecraft_server.${_mcver}.jar
 
-    cd "$builddir"/libraries
-    find . -type f -exec install -m 644 -D {} "$installdir"/libraries/{} \;
+	cd "$builddir"/libraries
+	find . -type f -exec install -m 644 -D {} "$installdir"/libraries/{} \;
 
-    install -m 755 -D "$srcdir"/$pkgname.bin   "$pkgdir"/usr/bin/$pkgname
-    install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
-    install -m 644 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -m 755 -D "$srcdir"/$pkgname.bin   "$pkgdir"/usr/bin/$pkgname
+	install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -m 644 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
 }
 
 sha512sums="
