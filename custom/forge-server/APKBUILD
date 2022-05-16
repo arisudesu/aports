@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=forge-server
 pkgver=14.23.5.2860
-pkgrel=2
+pkgrel=3
 pkgdesc="Minecraft Forge server"
 url="https://minecraftforge.net/"
 arch="noarch"
@@ -37,7 +37,7 @@ package() {
 	install -m 644 -D "$builddir/"minecraft_server.${_mcver}.jar "$installdir"/minecraft_server.${_mcver}.jar
 
 	cd "$builddir"/libraries
-	find . -type f -exec install -m 644 -D {} "$installdir"/libraries/{} \;
+	find . -type f -name '*.jar' -exec install -m 644 -D {} "$installdir"/libraries/{} \;
 
 	install -m 755 -D "$srcdir"/$pkgname.bin   "$pkgdir"/usr/bin/$pkgname
 	install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
