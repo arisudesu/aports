@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Options
+JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
+JAVA_OPTS="$@"
+JAVA_JAR="/usr/share/magma-server/magma-server.jar"
+
+MAGMA_OPTS="-dau"
+
+# Launch Minecraft server
+exec "${JAVA_HOME}"/bin/java ${JAVA_OPTS} -cp "${JAVA_JAR}:minecraft_server.1.12.2.jar" net.minecraftforge.fml.relauncher.ServerLaunchWrapper "${MAGMA_OPTS}"

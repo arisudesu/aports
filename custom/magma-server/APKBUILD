@@ -1,0 +1,39 @@
+# Contributor:
+# Maintainer:
+pkgname=magma-server
+pkgver=1.12.2_git20220512
+pkgrel=0
+pkgdesc="Minecraft Magma server"
+url="https://magmafoundation.org/"
+arch="noarch"
+license="custom"
+depends="openjdk8-jre-base dtach"
+makedepends="openjdk8-jre-base"
+install="$pkgname.pre-install"
+options="!check net"
+pkgusers="magma"
+pkggroups="magma"
+subpackages="$pkgname-openrc"
+_mcver="${pkgver%_git*}"
+_magmaver=3dc9bdb1
+_filever="${_mcver}-${_magmaver}"
+source="https://git.magmafoundation.org/api/v4/projects/7/packages/maven/org/magmafoundation/Magma/${_filever}/Magma-${_filever}.jar
+		$pkgname.bin
+		$pkgname.initd
+		$pkgname.confd"
+
+package() {
+	install -m 644 -D "$srcdir/"Magma-${_filever}.jar \
+		"$pkgdir"/usr/share/magma-server/magma-server.jar
+
+	install -m 755 -D "$srcdir"/$pkgname.bin   "$pkgdir"/usr/bin/$pkgname
+	install -m 755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -m 644 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+}
+
+sha512sums="
+177d1df6a5ae989b16da02a6b2cb04b473a92269bbc8bb458909de9fed343cd95343d7a74f0d2217f102dfbba2bf54a8df832dcde0a1258bd8eecde8ee561e98  Magma-1.12.2-3dc9bdb1.jar
+771d42e458317d53da781eca0aec0e43da637268ffa4300cd6091e7729778e157de0e9f335b93aadaf0064721d60c719b25ff176e66884efcaf47df3d199e1fa  magma-server.bin
+2c548fea6bafc550b14b6ae612395632040ce553708381e0110679ff487fb18d16c0fa2a5c421c89310ec28d505069306d85a1705ce410f2261d558c998a537e  magma-server.initd
+28ef6628dfe8f26e2f2d2fc6b1297443c88af539fb2854294a53885344cbe9b7877a85dd44df711c221296fe5bcea32d9982ae60549004c037412294c52ac558  magma-server.confd
+"

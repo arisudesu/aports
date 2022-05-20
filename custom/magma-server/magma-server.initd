@@ -1,0 +1,62 @@
+#!/sbin/openrc-run
+# Copyright 1999-2021 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+if [ "${SVCNAME}" = "magma-server" ]; then
+	instance="default"
+else
+	instance="${SVCNAME#magma-server.}"
+fi
+
+dtach_tmpfile="$(mktemp -u)"
+magma_command="/usr/bin/magma-server"
+magma_logs="/var/log/magma-server"
+magma_logs_instance="${magma_logs}/${instance}"
+magma_path="/var/lib/magma-server"
+magma_path_instance="${magma_path}/${instance}"
+name="Minecraft Magma Server (World: ${instance})"
+pidfile="/run/magma-server.${instance}.pid"
+start_stop_daemon_args="--chdir ${magma_path_instance} --env JAVA_OPTS='${JAVA_OPTS}' --env COLUMNS=80 --env ROWS=25"
+
+description_attach="Attaches to the session (interactive console) of the Minecraft Magma server"
+extra_started_commands="attach"
+
+command="/usr/bin/dtach"
+command_background="true"
+command_args="-N ${dtach_tmpfile} ${magma_command} ${JAVA_OPTS}"
+command_group="magma"
+command_user="magma"
+
+depend() {
+	use net
+}
+
+start_pre() {
+	checkpath -d -o "${command_user}:${command_group}" -q "${magma_path}" "${magma_path_instance}"
+
+	checkpath -f -o "${command_user}:${command_group}" -q "${magma_path_instance}"/eula.txt
+	echo "eula=true" > "${magma_path_instance}"/eula.txt
+
+	checkpath -d -o "${command_user}:${command_group}" -q "${magma_logs}" "${magma_logs_instance}"
+
+	if [ ! -L "${magma_path_instance}"/logs ]; then
+		cd "${magma_path_instance}" && ln -s -T ../../../log/magma-server/"${instance}" logs
+	fi
+
+	if [ -z "${JAVA_OPTS}" ]; then
+		eerror "You must define 'JAVA_OPTS' in '/etc/conf.d/${SVCNAME}'!"
+		return 1
+	fi
+}
+
+attach() {
+	pidnumber="$(cat ${pidfile})"
+	dtach_tmpfile="$(cat /proc/${pidnumber}/cmdline | tr '\0' ' ' | awk '{print $3}')"
+
+	if [ -S "${dtach_tmpfile}" ]; then
+		eval "${command}" -a "${dtach_tmpfile}" "${DTACH_OPTS}"
+	else
+		eerror "The determined socket file for dtach could not be found!"
+		eerror "Did the process crash?"
+	fi
+}

@@ -1,0 +1,4 @@
+#!/bin/sh
+addgroup -S magma 2>/dev/null
+adduser -S -D -h /var/lib/magma-server -s /sbin/nologin -G magma -g magma magma 2>/dev/null
+exit 0
