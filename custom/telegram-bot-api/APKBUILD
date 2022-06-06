@@ -16,9 +16,9 @@ subpackages="$pkgname-doc $pkgname-openrc"
 _commit=8a0f1dd730aa41ab7b792b9ff03d92b1c5022c9f
 _tdlib_commit=ab3a8282d4ee307d341071267ef1090b1a941478
 source="$pkgname-$_commit.tar.gz::https://github.com/tdlib/telegram-bot-api/archive/$_commit.tar.gz
-		td-$_tdlib_commit.tar.gz::https://github.com/tdlib/td/archive/$_tdlib_commit.tar.gz
-		$pkgname.initd
-		$pkgname.confd"
+	td-$_tdlib_commit.tar.gz::https://github.com/tdlib/td/archive/$_tdlib_commit.tar.gz
+	$pkgname.initd
+	$pkgname.confd"
 builddir="$srcdir/$pkgname-$_commit"
 
 prepare() {
