@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=telegram-bot-api
-pkgver=6.0.2
+pkgver=6.1
 pkgrel=1
 pkgdesc="Telegram Bot API server"
 url="https://github.com/tdlib/telegram-bot-api"
@@ -13,8 +13,8 @@ pkggroups="$pkgname"
 makedepends="cmake openssl-dev zlib-dev gperf linux-headers"
 install="$pkgname.pre-install"
 subpackages="$pkgname-doc $pkgname-openrc"
-_commit=8a0f1dd730aa41ab7b792b9ff03d92b1c5022c9f
-_tdlib_commit=ab3a8282d4ee307d341071267ef1090b1a941478
+_commit=24ee05d15fca6f771c8229c38d96d6008b81c64a
+_tdlib_commit=b393215d6671863b6baf2a589d343cff9474f6ba
 source="$pkgname-$_commit.tar.gz::https://github.com/tdlib/telegram-bot-api/archive/$_commit.tar.gz
 	td-$_tdlib_commit.tar.gz::https://github.com/tdlib/td/archive/$_tdlib_commit.tar.gz
 	$pkgname.initd
@@ -46,8 +46,8 @@ package() {
 }
 
 sha512sums="
-4dd0fdea6a68546a19047eb91e1b9b726ec019ba9233b29402e76a4ce28f2b459294236db6cab4ff7a94ec5113c682743dc47ad35c5ce79c87047ba033aaa558  telegram-bot-api-8a0f1dd730aa41ab7b792b9ff03d92b1c5022c9f.tar.gz
-d02bc19ce92afc1495467807aaff949e24f207ea6a092fa7755b593e8047a5cf3d7c14d5f2840e90999030c5b21028970eb3ddd4cdccc3b0c0d4ccd071b05425  td-ab3a8282d4ee307d341071267ef1090b1a941478.tar.gz
+cc4bcb5db1361ba3e7a3035a108d9ac4ce9f15f1927f946cc3607ea3891bb71440d844f3ae890fed119859128e1ab62d80889739c3c6ab504f338fc953201f77  telegram-bot-api-24ee05d15fca6f771c8229c38d96d6008b81c64a.tar.gz
+535df72202a159384a7f9d8624724caa5057a6378cf5c1b630a9924811fdf2109a79b25a02dcbd8f8bbd79ca7abe2912afa4b4bc92be153f65e665b2eaeaa7d8  td-b393215d6671863b6baf2a589d343cff9474f6ba.tar.gz
 ebc0c0a0c5dbdb2832152484e4e7ad14c77ab1f8815d0822c20fdbab727f2808664843cfd152a34aa27de4dac215a11d485262f8b23041e9ec71e2d35430b1e1  telegram-bot-api.initd
-f893f6829dc655bce4a21a3a8f0ed88ed4cc21d5f4afb06fa7e3293b930a67e8fbd2e8b2e74ddfa723f87465c6fc988a28298137d669cbb483a764989303102a  telegram-bot-api.confd
+b2b60c0d1197a2e77b45a33a13bdc0881a694cefde95934b0597d5d7ce4206f310d1093f050713b8f769c685b0291580710c171cc038c8da4f02aea1af65df54  telegram-bot-api.confd
 "
