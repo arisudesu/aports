@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=magma-server
-pkgver=1.12.2_git20220602
+pkgver=1.12.2_git20220621
 pkgrel=0
 pkgdesc="Minecraft Magma server"
 url="https://magmafoundation.org/"
@@ -15,7 +15,7 @@ pkgusers="magma"
 pkggroups="magma"
 subpackages="$pkgname-openrc"
 _mcver="${pkgver%_git*}"
-_magmaver=c24c6905
+_magmaver=866f4a2c
 _filever="${_mcver}-${_magmaver}"
 source="https://git.magmafoundation.org/api/v4/projects/7/packages/maven/org/magmafoundation/Magma/${_filever}/Magma-${_filever}.jar
 		$pkgname.bin
@@ -32,7 +32,7 @@ package() {
 }
 
 sha512sums="
-6063f726b60e90a8aab2b2299e47856e0eadb5f199abb1c01755d8187f8d57d0776a2bbfa1d62a31f2b97a78876b967e8dbbaddf70515cb0e0c251cb40797fcc  Magma-1.12.2-3dc9bdb1.jar
+226ad95a4c138675ccf5c62064ddb3437a98a19810e0f8defb84d6bc6753584876a02df450178a160e353f525ce1251037df920cfdd5cefe74b98fe301c81214  Magma-1.12.2-866f4a2c.jar
 771d42e458317d53da781eca0aec0e43da637268ffa4300cd6091e7729778e157de0e9f335b93aadaf0064721d60c719b25ff176e66884efcaf47df3d199e1fa  magma-server.bin
 2c548fea6bafc550b14b6ae612395632040ce553708381e0110679ff487fb18d16c0fa2a5c421c89310ec28d505069306d85a1705ce410f2261d558c998a537e  magma-server.initd
 28ef6628dfe8f26e2f2d2fc6b1297443c88af539fb2854294a53885344cbe9b7877a85dd44df711c221296fe5bcea32d9982ae60549004c037412294c52ac558  magma-server.confd
