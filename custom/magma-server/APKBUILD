@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=magma-server
-pkgver=1.12.2_git20220621
+pkgver=1.12.2_git20220709
 pkgrel=0
 pkgdesc="Minecraft Magma server"
 url="https://magmafoundation.org/"
@@ -15,7 +15,7 @@ pkgusers="magma"
 pkggroups="magma"
 subpackages="$pkgname-openrc"
 _mcver="${pkgver%_git*}"
-_magmaver=866f4a2c
+_magmaver=9a3e486d
 _filever="${_mcver}-${_magmaver}"
 source="https://git.magmafoundation.org/api/v4/projects/7/packages/maven/org/magmafoundation/Magma/${_filever}/Magma-${_filever}.jar
 		$pkgname.bin
