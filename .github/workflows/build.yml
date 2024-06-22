@@ -1,0 +1,46 @@
+name: Build packages
+
+on:
+  push:
+    branch: master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Prepare aports"
+        uses: actions/checkout@v4
+        with:
+          path: aports
+
+      - name: "Prepare packages"
+        uses: actions/checkout@v4
+        with:
+          ref: packages
+          path: packages
+
+      - name: "Run build"
+        run: |
+          mkdir -m 0700 .abuild
+          echo "${{ secrets.PACKAGER_PRIVKEY }}" > .abuild/arisudesu@users.noreply.github.com-66758c7b.rsa
+          echo "${{ secrets.PACKAGER_PRIVKEY_PUB }}" > .abuild/arisudesu@users.noreply.github.com-66758c7b.rsa.pub
+
+          cd aports
+          export ALPINE_VERSION=$(cat github_build_target)
+          export PACKAGER_PRIVKEY=$PWD/../.abuild/arisudesu@users.noreply.github.com-66758c7b.rsa
+          ./github-build.sh $(cat github_build_repos)
+
+      - name: Commit packages
+        run: |
+          cd packages
+          git config --global user.name 'Arisu Desu'
+          git config --global user.email 'arisudesu@users.noreply.github.com'
+
+          git add .
+          git diff-index --quiet HEAD && exit 0
+          git commit -am "Updated packages from ${{ github.sha }}"
+          git push origin packages
