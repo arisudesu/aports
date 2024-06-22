@@ -2,7 +2,8 @@ name: Build packages
 
 on:
   push:
-    branch: master
+    branches:
+      - master
   workflow_dispatch:
 
 permissions:
