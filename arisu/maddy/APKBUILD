@@ -13,6 +13,7 @@ subpackages="$pkgname-openrc $pkgname-doc $pkgname-vim::noarch"
 pkgusers="$pkgname"
 pkggroups="$pkgname"
 install="$pkgname.pre-install"
+options="net"
 source="https://github.com/foxcpp/maddy/archive/v$pkgver/maddy-$pkgver.tar.gz
 	$pkgname.initd
 	use-syslog.patch
