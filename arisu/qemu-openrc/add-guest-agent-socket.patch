@@ -1,0 +1,97 @@
+From 1ae75e2e8c04257629e44ff0bd5ab70f5014bcec Mon Sep 17 00:00:00 2001
+From: Arisu Desu <arisudesu@yandex.ru>
+Date: Sat, 22 Jun 2024 23:08:54 +0300
+Subject: [PATCH] Add guest-agent socket; make use of it to request guest
+ shutdown along with ACPI request
+
+---
+ qemu.confd |  2 ++
+ qemu.initd | 20 +++++++++++++++-----
+ 2 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/qemu.confd b/qemu.confd
+index 9dfd1cf..6733b08 100644
+--- a/qemu.confd
++++ b/qemu.confd
+@@ -98,6 +98,8 @@
+ # Path of the QEMU monitor socket for this VM.
+ #monitor_socket="/run/qemu/${VM_NAME}/monitor.sock"
+ 
++# Path of the QEMU Guest Agent socket for this VM.
++#qemu_ga_socket="/run/qemu/${VM_NAME}/qemu_ga.sock"
+ 
+ ##
+ # Network interfaces
+diff --git a/qemu.initd b/qemu.initd
+index 9cfb3c7..ee87243 100644
+--- a/qemu.initd
++++ b/qemu.initd
+@@ -26,6 +26,7 @@ VM_NAME="${RC_SVCNAME#qemu.}"
+ : ${vnc_listen:=0.0.0.0}
+ : ${hugepages_path:=/dev/hugepages}
+ : ${monitor_socket:=/run/qemu/${VM_NAME}/monitor.sock}
++: ${qemu_ga_socket:=/run/qemu/${VM_NAME}/qemu-ga.sock}
+ : ${extra_args:=}
+ 
+ name="VM $VM_NAME"
+@@ -54,7 +55,10 @@ command_args="
+ 	-vga $vga
+ 	-device virtio-rng-pci
+ 	-device virtio-scsi-pci,id=scsi
+-	-monitor unix:$monitor_socket,server,nowait"
++	-monitor unix:$monitor_socket,server,nowait
++	-chardev socket,path=$qemu_ga_socket,server,nowait,id=qga0
++	-device virtio-serial
++	-device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"
+ command_background='yes'
+ command_user="$user"
+ command_group="$group"
+@@ -102,7 +106,7 @@ start_pre() {
+ 		einfo "Command: $command $(printf '%s ' $command_args)"
+ 	fi
+ 
+-	local path; for path in "$pidfile" "$monitor_socket" "$logfile"; do
++	local path; for path in "$pidfile" "$monitor_socket" "$qemu_ga_socket" "$logfile"; do
+ 		# checkpath doesn't create intermediate directories
+ 		mkdir -p "$(dirname "$path")"
+ 		checkpath -d -m 0750 -o $user:$group "$(dirname "$path")"
+@@ -112,8 +116,8 @@ start_pre() {
+ }
+ 
+ start_post() {
+-	ewaitfile 5 "$monitor_socket" || {
+-		eerror 'Monitor socket has not been created!'; return 1
++	ewaitfile 5 "$monitor_socket" "$qemu_ga_socket" || {
++		eerror 'Monitor socket or guest agent socket have not been created!'; return 1
+ 	}
+ 	if [ -n "$vnc_password" ]; then
+ 		qemush "set_password vnc $vnc_password" || eerror 'Failed to set VNC password!'
+@@ -126,7 +130,7 @@ stop() {
+ 
+ 	ebegin "Stopping $name"
+ 
+-	if is_running && qemush 'system_powerdown'; then
++	if is_running && guestcmd '{"execute":"guest-shutdown"}' && qemush 'system_powerdown'; then
+ 		count="$shutdown_timeout"
+ 
+ 		printf "   Waiting $count seconds for VM shutdown "
+@@ -152,6 +156,7 @@ stop() {
+ 
+ stop_post() {
+ 	[ -S "$monitor_socket" ] && rm -f "$monitor_socket"
++	[ -S "$qemu_ga_socket" ] && rm -f "$qemu_ga_socket"
+ 	[ -f "$pidfile" ] && rm -f "$pidfile"
+ 	return 0
+ }
+@@ -290,6 +295,11 @@ qemush_show() {
+ 	printf "%b\n" "$*" | socat - "UNIX-CONNECT:${monitor_socket}" | tail -n +3 | head -n -1
+ }
+ 
++guestcmd() {
++	local IFS=$'\n'
++	printf "%b\n" "$*" | socat - "UNIX-CONNECT:${qemu_ga_socket}" 1>/dev/null
++}
++
+ gen_macaddr() {
+ 	printf "$1" | md5sum | sed -E 's/^(..)(..)(..)(..).*$/52:54:\1:\2:\3:\4/'
+ }
