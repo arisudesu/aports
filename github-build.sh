@@ -49,6 +49,7 @@ for repo in $*; do
         --volume "$PACKAGER_PRIVKEY.pub:/etc/apk/keys/$packager_privkey_basename.pub" \
         --volume "$APORTS_DIR:/abuild/aports" \
         --volume "$PACKAGES_DIR/$ALPINE_VERSION:/abuild/packages" \
+        --env "ALPINE_VERSION=$ALPINE_VERSION" \
         aports-builder buildrepo \
             -a /abuild/aports \
             -d /abuild/packages \

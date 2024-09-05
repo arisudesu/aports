@@ -1,2 +1,2 @@
-$mirror/$version/main
-$mirror/$version/community
+$mirror/v$ALPINE_VERSION/main
+$mirror/v$ALPINE_VERSION/community
