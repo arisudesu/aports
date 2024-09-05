@@ -116,7 +116,7 @@ start() {
 		--background \
 		--make-pidfile \
 		-- \
-		-f -o allow_other ${VARDIR}
+		-f -o allow_other ${ADDARGS} ${VARDIR}
 
 	# sometimes reboots are too fast
 	until [ -d ${RUNDIR} ]; do
