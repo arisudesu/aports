@@ -1,5 +1,6 @@
 # Contributor:
 # Maintainer:
+# Origin: https://git.alpinelinux.org/aports/tree/community/qemu-openrc/APKBUILD?h=3.20-stable
 pkgname=qemu-openrc
 pkgver=0.11.1
 pkgrel=1
