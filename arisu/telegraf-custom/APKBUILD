@@ -1,0 +1,81 @@
+# Contributor:
+# Maintainer:
+# Source: https://git.alpinelinux.org/aports/tree/community/telegraf/APKBUILD?h=3.20-stable
+pkgname=telegraf-custom
+_origpkgname=telegraf
+pkgver=1.30.2
+pkgrel=0
+_commit=10c15ce41 # git rev-parse --short HEAD
+_branch=release-${pkgver%.*}
+pkgdesc="A plugin-driven server agent for collecting & reporting metrics, part of the InfluxDB project"
+url="https://www.influxdata.com/time-series-platform/telegraf/"
+arch="x86_64 aarch64"
+license="MIT"
+makedepends="go binutils-gold linux-headers"
+checkdepends="tzdata"
+install="$pkgname.pre-install"
+subpackages="$pkgname-openrc $pkgname-doc"
+options="net"
+source="telegraf-$pkgver.tar.gz::https://github.com/influxdata/telegraf/archive/v$pkgver.tar.gz
+	telegraf.initd
+	telegraf.confd
+	"
+builddir="$srcdir/telegraf-$pkgver"
+
+_custom_plugins="inputs.cpu
+	inputs.disk
+	inputs.diskio
+	inputs.docker
+	inputs.exec
+	inputs.http_response
+	inputs.kernel
+	inputs.mem
+	inputs.net
+	inputs.netstat
+	inputs.processes
+	inputs.prometheus
+	inputs.prometheus.tags
+	inputs.sensors
+	inputs.smart
+	inputs.swap
+	inputs.system
+	inputs.x509_cert
+	inputs.zfs
+	outputs.prometheus_client
+	"
+
+export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
+export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
+export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
+
+build() {
+	local pkg="github.com/influxdata/telegraf/internal"
+	local ldflags="-X $pkg.Version=$pkgver -X $pkg.Branch=$_branch -X $pkg.Commit=$_commit"
+	local plugins="$(printf '%s\n' $_custom_plugins | tr '\n' ',')"
+	go build -ldflags "$ldflags" -tags "custom,$plugins" ./cmd/telegraf
+
+	# Generate sample config.
+	./telegraf config >telegraf.conf
+}
+
+check() {
+	# plugins/processors/scale: broken with 8.2 != 8.2000000000000001 on arm
+	# plugin/outputs/sql: mismatched metric count in test; 1 != 6
+	# shellcheck disable=2046
+	go test -short $(go list ./... | grep -Ev '(plugins/processors/scale|plugins/outputs/sql)')
+}
+
+package() {
+	install -Dm755 "$srcdir/$_origpkgname.initd" "$pkgdir/etc/init.d/$_origpkgname"
+	install -Dm644 "$srcdir/$_origpkgname.confd" "$pkgdir/etc/conf.d/$_origpkgname"
+	install -Dm755 "$builddir/$_origpkgname" "$pkgdir/usr/bin/$_origpkgname"
+	install -Dm644 "$builddir/$_origpkgname.conf" "$pkgdir/etc/$_origpkgname.conf"
+	install -dm755 "$pkgdir/etc/$_origpkgname.conf.d"
+	install -Dm644 "$builddir/LICENSE" "$pkgdir/usr/share/licenses/$_origpkgname/LICENSE"
+}
+
+sha512sums="
+9f66b371ef7e562f99a30358590be21e6c041be610491a74b9588e9ad9c2e8bdbd014b7fd0292f711f0fe72221078791e18316597ebac9e00b762111a19dfaa1  telegraf-1.30.2.tar.gz
+abe483deb8e12fe140de2c36d17bbfbc97ed7a5de8c3d76162357f7ba6575b8236b7197b92a26ed6d54f95c1ccbfc12ca62d6cc0371bf49d10a1ea5622a51ed1  telegraf.initd
+d1a9aa57f8b5179f2d8396518b9db757fe1c40337b515c1f750cf577683ff15f3174bc757afa70d880a1fef809c873e6aa0da1b903a5a97934c14965712d47a4  telegraf.confd
+"
