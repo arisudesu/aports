@@ -4,7 +4,7 @@
 pkgname=telegraf-custom
 _origpkgname=telegraf
 pkgver=1.30.2
-pkgrel=0
+pkgrel=1
 _commit=10c15ce41 # git rev-parse --short HEAD
 _branch=release-${pkgver%.*}
 pkgdesc="A plugin-driven server agent for collecting & reporting metrics, part of the InfluxDB project"
@@ -42,6 +42,7 @@ _custom_plugins="inputs.cpu
 	inputs.x509_cert
 	inputs.zfs
 	outputs.prometheus_client
+	parsers.influx
 	"
 
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
