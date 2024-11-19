@@ -1,0 +1,108 @@
+# Contributor:
+# Maintainer:
+
+# amneziawg version
+# when changing _ver we *must* bump _rel
+_ver=1.0.20241112
+_rel=0
+
+# kernel version
+# when changing _kver make sure _krel=0 & _rel=0
+_kver=6.6.61
+_krel=0
+
+_kpkgver="$_kver-r$_krel"
+
+# for custom kernels set $FLAVOR
+_extra_flavors=
+if [ -z "$FLAVOR" ]; then
+	_flavor=lts
+	case $CARCH in
+	x86|x86_64|armv7|aarch64) _extra_flavors="virt";;
+	esac
+else
+	_flavor=$FLAVOR
+fi
+_kpkg=linux-$_flavor
+
+pkgname=amneziawg-$_flavor
+pkgver=$_kver
+pkgrel=$(( $_rel + $_krel))
+
+pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: kernel modules for $_flavor"
+arch="all !armhf !mips !mips64"
+url="https://amnezia.org"
+license="GPL-2.0"
+depends="linux-$_flavor=$_kpkgver"
+makedepends="
+	libmnl-dev
+	linux-$_flavor-dev=$_kpkgver
+	linux-firmware-none
+	"
+install_if="amneziawg-tools-wg linux-$_flavor=$_kpkgver"
+options="!check"
+source="amneziawg-linux-kernel-module-$_ver.tar.gz::https://github.com/amnezia-vpn/amneziawg-linux-kernel-module/archive/refs/tags/v$_ver.tar.gz
+	https://cdn.kernel.org/pub/linux/kernel/v${_kver%%.*}.x/linux-$_kver.tar.xz
+	"
+builddir="$srcdir"/amneziawg-linux-kernel-module-$_ver
+
+for f in $_extra_flavors; do
+	makedepends="$makedepends linux-$f-dev=$_kpkgver"
+	subpackages="$subpackages amneziawg-$f:_extra"
+done
+
+prepare() {
+	default_prepare
+	if [ -z "$FLAVOR" ]; then
+		# TODO: figure out how to prepare without cloning official kernel APKBUILD... skip until then
+		# ... Maybe download this APKBUILD from gitweb at a specific commit?
+	 	true
+		# (	. "$startdir"/../../main/linux-$_flavor/APKBUILD
+		# 	[ "$_kver" != "$pkgver" ] && die "please update _kver to $pkgver"
+		# 	[ "$_krel" != "$pkgrel" ] && die "please update _krel to $pkgrel"
+		# 	return 0
+		# )
+	fi
+	local flavor=
+	for flavor in $_flavor $_extra_flavors; do
+		cp -r "$builddir" "$srcdir"/$flavor
+
+		# AmneziaWG suggests symlink, but it will patch sources; let's copy instead
+		cp -r "$srcdir"/linux-"$_kver" "$srcdir"/$flavor/src/kernel
+
+		kabi="$_kver-$_krel-$flavor"
+		make -C "$srcdir/$flavor"/src \
+			KERNELDIR=/lib/modules/$kabi/build apply-patches
+	done
+}
+
+build() {
+	unset LDFLAGS
+	local flavor= kabi=
+	for flavor in $_flavor $_extra_flavors; do
+		kabi="$_kver-$_krel-$flavor"
+		make -C "$srcdir/$flavor"/src \
+			KERNELDIR=/lib/modules/$kabi/build module
+	done
+}
+
+package() {
+	local kabi="$_kver-$_krel-$_flavor"
+	install -Dm644 "$srcdir"/$_flavor/src/amneziawg.ko \
+		"$pkgdir/lib/modules/$kabi/extra/amneziawg.ko"
+}
+
+_extra() {
+	flavor=${subpkgname##*-}
+	depends="linux-$flavor=$_kpkgver"
+	install_if="amneziawg-tools-wg linux-$flavor=$_kpkgver"
+	pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: kernel modules for $flavor"
+	local kabi="$_kver-$_krel-$flavor"
+	install -Dm644 "$srcdir"/virt/src/amneziawg.ko \
+		"$subpkgdir/lib/modules/$kabi/extra/amneziawg.ko"
+}
+
+sha512sums="
+0d0dde7324088f2f3eff2cff9679e7f25b20d9796462da9949e6fc97af320a43ace27f9dfbd32cc2995449a68b313d6877ced6aa0ad3fbd02f15b1338e62fdff  amneziawg-linux-kernel-module-1.0.20241112.tar.gz
+df3635ffdf68a2547eb3e992f4510bb5080bbeaea98731225f4d5e3c9afb532bc1f35f38321db49fb70ea0baec55b14f48b2251480c10432e8c428b2cc0a2028  linux-6.6.61.tar.xz
+"

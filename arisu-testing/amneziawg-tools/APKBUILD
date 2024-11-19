@@ -1,0 +1,64 @@
+# Contributor:
+# Maintainer:
+pkgname=amneziawg-tools
+pkgver=1.0.20241018
+pkgrel=4
+pkgdesc="Next generation secure network tunnel: userspace tools"
+arch="all"
+url="https://amnezia.org"
+# SPDX identifier headers tells us 'GPL-2.0' but considering it
+# is a kernel project i think it is safe to assume it is GPL-2.0-only just
+# like the kernel.
+license="GPL-2.0-only"
+_awg_quick_deps="iproute2 bash openresolv"
+makedepends="libmnl-dev $_awg_quick_deps"
+depends="$pkgname-awg $pkgname-awg-quick"
+install="$pkgname-openrc.post-install"
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion
+	$pkgname-awg:_split
+	$pkgname-awg-quick:_split:noarch
+	$pkgname-openrc
+	"
+options="!check"
+source="
+	amneziawg-tools-$pkgver.tar.gz::https://github.com/amnezia-vpn/amneziawg-tools/archive/refs/tags/v$pkgver.tar.gz
+	awg-quick.initd
+	"
+
+build() {
+	make -C src
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/doc/$pkgname"
+
+	make -C src \
+		DESTDIR="$pkgdir" \
+		WITH_BASHCOMPLETION=yes \
+		WITH_WGQUICK=yes \
+		WITH_SYSTEMDUNITS=no \
+		install
+
+	find "$builddir"/contrib -name '.gitignore' -delete
+	cp -rf "$builddir"/contrib "$pkgdir/usr/share/doc/$pkgname/"
+
+	install -Dm755 "$srcdir"/awg-quick.initd "$pkgdir"/etc/init.d/awg-quick
+}
+
+_split() {
+	local cmd=${subpkgname/$pkgname-}
+	pkgdesc="$pkgdesc ($cmd)"
+	case $cmd in
+		awg-quick) depends="$pkgname-awg=$pkgver-r$pkgrel $_awg_quick_deps" ;;
+		*) depends= ;;
+	esac
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/$cmd "$subpkgdir"/usr/bin/
+}
+
+sha512sums="
+cc6ba3ea8cc4e8ec75c690926e3bc37e942e3019ba4a560efecab70103a1c91be48db6066ef250ad1cbf6bb6cff50dac1d2980147ec1eed860872133068b0595  amneziawg-tools-1.0.20241018.tar.gz
+858f86d0b37de72356d3f8f80482516fa648a0e4b1467f2916eacf8d66919f2fc8a37223d439f022ff09a97aee87519a4b87b646049b9bec49bb31260942ff46  awg-quick.initd
+"
