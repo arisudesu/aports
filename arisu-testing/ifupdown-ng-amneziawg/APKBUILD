@@ -1,0 +1,35 @@
+# Contributor:
+# Maintainer:
+pkgname=ifupdown-ng-amneziawg
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="ifupdown-ng integration for amneziawg"
+arch="noarch"
+url="https://github.com/arisudesu/aports"
+license="ISC"
+depends="amneziawg-tools-awg"
+makedepends=
+subpackages="$pkgname-quick"
+options="!check" # no test suite
+source="amneziawg
+	amneziawg-quick"
+install_if="ifupdown-ng $depends"
+
+package() {
+	echo install -Dm755 "$srcdir"/amneziawg "$pkgdir"/usr/libexec/ifupdown-ng/amneziawg
+	install -Dm755 "$srcdir"/amneziawg "$pkgdir"/usr/libexec/ifupdown-ng/amneziawg
+}
+
+quick() {
+	pkgdesc="ifupdown-ng integration for amneziawg awg-quick"
+	depends="amneziawg-tools-awg-quick"
+	install_if="ifupdown-ng $depends"
+
+	echo install -Dm755 "$srcdir"/amneziawg-quick "$subpkgdir"/usr/libexec/ifupdown-ng/amneziawg-quick
+	install -Dm755 "$srcdir"/amneziawg-quick "$subpkgdir"/usr/libexec/ifupdown-ng/amneziawg-quick
+}
+
+sha512sums="
+9b528f7564e542d8fbedf279ad4da0725ca2c063ef92c4fc6150e92eeb1d4349c406e843268893868836a37369f0674ba32dcba14520642825b7d21e51df62b6  amneziawg
+79547957163ff85b041a852639d442017ce53acf5f2bbb63088fe417e425e009d48c94f9a26c722e2aedc77c44c3788e40ebe7f927b85307dd799dcda821cb82  amneziawg-quick
+"
