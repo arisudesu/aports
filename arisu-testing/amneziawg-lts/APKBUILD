@@ -4,7 +4,7 @@
 # amneziawg version
 # when changing _ver we *must* bump _rel
 _ver=1.0.20241112
-_rel=1
+_rel=2
 
 # kernel version
 # when changing _kver make sure _krel=0 & _rel=0
@@ -67,8 +67,7 @@ prepare() {
 	for flavor in $_flavor $_extra_flavors; do
 		cp -r "$builddir" "$srcdir"/$flavor
 
-		# AmneziaWG suggests symlink, but it will patch sources; let's copy instead
-		cp -r "$srcdir"/linux-"$_kver" "$srcdir"/$flavor/src/kernel
+		ln -sfn "$srcdir"/linux-"$_kver" "$srcdir"/$flavor/src/kernel
 
 		kabi="$_kver-$_krel-$flavor"
 		make -C "$srcdir/$flavor"/src \
