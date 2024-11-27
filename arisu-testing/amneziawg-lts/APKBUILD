@@ -4,7 +4,7 @@
 # amneziawg version
 # when changing _ver we *must* bump _rel
 _ver=1.0.20241112
-_rel=2
+_rel=3
 
 # kernel version
 # when changing _kver make sure _krel=0 & _rel=0
@@ -33,7 +33,7 @@ pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: kernel m
 arch="all !armhf !mips !mips64"
 url="https://amnezia.org"
 license="GPL-2.0"
-depends="linux-$_flavor=$_kpkgver"
+depends="linux-$_flavor=$_kpkgver !linux-$_flavor>$_kpkgver"
 makedepends="
 	libmnl-dev
 	linux-$_flavor-dev=$_kpkgver
@@ -93,7 +93,7 @@ package() {
 
 _extra() {
 	flavor=${subpkgname##*-}
-	depends="linux-$flavor=$_kpkgver"
+	depends="linux-$flavor=$_kpkgver !linux-$_flavor>$_kpkgver"
 	install_if="amneziawg-tools-awg linux-$flavor=$_kpkgver"
 	pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: kernel modules for $flavor"
 	local kabi="$_kver-$_krel-$flavor"
