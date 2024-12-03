@@ -3,13 +3,14 @@
 # Origin: https://git.alpinelinux.org/aports/tree/community/shadowsocks-rust/APKBUILD
 pkgname=shadowsocks-rust
 pkgver=1.21.2
-pkgrel=0
+pkgrel=1
 pkgdesc="Rust port of shadowsocks"
 url="https://github.com/shadowsocks/shadowsocks-rust"
 arch="all"
 license="MIT"
 makedepends="
 	cargo
+	cargo-auditable
 	mimalloc2-dev
 	openssl-dev
 	"
@@ -63,7 +64,7 @@ build() {
 		features="$features local-tun"
 		;;
 	esac
-	cargo build --release \
+	cargo auditable build --release \
 		--frozen \
 		--bins \
 		--no-default-features \
