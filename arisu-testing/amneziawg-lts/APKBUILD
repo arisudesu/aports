@@ -8,8 +8,8 @@ _rel=0
 
 # kernel version
 # when changing _kver make sure _krel=0 & _rel=0
-_kver=6.6.63
-_krel=0
+_kver=6.12.1
+_krel=3
 
 _kpkgver="$_kver-r$_krel"
 
@@ -103,5 +103,5 @@ _extra() {
 
 sha512sums="
 0d0dde7324088f2f3eff2cff9679e7f25b20d9796462da9949e6fc97af320a43ace27f9dfbd32cc2995449a68b313d6877ced6aa0ad3fbd02f15b1338e62fdff  amneziawg-linux-kernel-module-1.0.20241112.tar.gz
-7ae46444545754d0ea70884d981206b3122adfb5217bf6d14f5726d0bc31e125000e498759f9a13378b5b8b3e1f09f85c93644671995ff05ed95603432d2c64d  linux-6.6.63.tar.xz
+c7523dc5b012367301ab43a685b766dce025c4993041acd3dacd085b052b3fccc7f50c892357acf481e24ccad512770ef46a13d2da16c2a178c44a27f7022932  linux-6.12.1.tar.xz
 "
