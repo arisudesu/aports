@@ -1,6 +1,6 @@
-modname=$_modname
-modver=$pkgver-r$pkgrel
-built_modules="$_modname.ko"
+modname=@_modname@
+modver=@pkgver@-r@pkgrel@
+built_modules="@_modname@.ko"
 
 build() {
 	cp -a "$srcdir"/* "$builddir"
