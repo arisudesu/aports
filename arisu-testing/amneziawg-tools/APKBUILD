@@ -3,7 +3,7 @@
 pkgname=amneziawg-tools
 pkgver=1.0.20241018
 pkgrel=4
-pkgdesc="Next generation secure network tunnel: userspace tools"
+pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: userspace tools"
 arch="all"
 url="https://amnezia.org"
 # SPDX identifier headers tells us 'GPL-2.0' but considering it
