@@ -1,0 +1,75 @@
+# Contributor:
+# Maintainer:
+pkgname=teamspeak3-server
+pkgver=3.13.7
+pkgrel=0
+pkgdesc="A server software for hosting quality voice communication via the internet"
+url="https://www.teamspeak.com"
+arch="x86_64"
+license="Apache-2.0 Boost-1.0 BSD LGPL-2.1 LGPL-3 MIT custom"
+install="$pkgname.pre-install"
+subpackages="$pkgname-doc $pkgname-openrc $pkgname-mariadb $pkgname-postgresql"
+source="https://files.teamspeak-services.com/releases/server/$pkgver/teamspeak3-server_linux_alpine-$pkgver.tar.bz2
+	ts3server.ini
+	ts3server_mariadb.ini.sample
+	ts3db_mariadb.ini.sample
+	ts3server_postgresql.ini.sample
+	ts3db_postgresql.ini.sample
+	teamspeak3-server.initd
+	"
+builddir="$srcdir/teamspeak3-server_linux_alpine"
+options="!check !tracedeps"
+
+package() {
+	install -D -m755 -t "$pkgdir"/usr/lib/teamspeak3-server/ \
+		"$builddir"/ts3server \
+		"$builddir"/libts3_ssh.so \
+		"$builddir"/libts3db_sqlite3.so
+
+	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/teamspeak3-server/ts3server.ini
+
+	install -d -m755 "$pkgdir"/usr/lib/teamspeak3-server/serverquerydocs
+	cp -r "$builddir"/serverquerydocs/* "$pkgdir"/usr/lib/teamspeak3-server/serverquerydocs/
+
+	install -d -m755 "$pkgdir"/usr/lib/teamspeak3-server/sql
+	cp -r "$builddir"/sql/*.sql "$pkgdir"/usr/lib/teamspeak3-server/sql/
+	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/usr/lib/teamspeak3-server/sql/
+
+	install -D -m644 "$builddir"/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+
+	install -d -m755 "$pkgdir"/usr/bin
+	ln -s /usr/lib/teamspeak3-server/ts3server "$pkgdir"/usr/bin/
+
+	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/teamspeak3-server/ts3server.ini
+
+	install -D -m755 "$srcdir"/teamspeak3-server.initd "$pkgdir"/etc/init.d/teamspeak3-server
+}
+
+mariadb() {
+	install -D -m755 "$builddir"/libts3db_mariadb.so "$subpkgdir"/usr/lib/teamspeak3-server/libts3db_mariadb.so
+	install -D -m755 "$builddir"/redist/libmariadb.so.2 "$subpkgdir"/usr/lib/teamspeak3-server/redist/libmariadb.so.2
+	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
+	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/usr/lib/teamspeak3-server/sql/
+	install -D -m644 -t "$subpkgdir"/usr/share/teamspeak3-server/ \
+		"$srcdir"/ts3server_mariadb.ini.sample \
+		"$srcdir"/ts3db_mariadb.ini.sample
+}
+
+postgresql() {
+	install -D -m755 "$builddir"/libts3db_postgresql.so "$subpkgdir"/usr/lib/teamspeak3-server/libts3db_postgresql.so
+	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
+	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/usr/lib/teamspeak3-server/sql/
+	install -D -m644 -t "$subpkgdir"/usr/share/teamspeak3-server/ \
+		"$srcdir"/ts3server_postgresql.ini.sample \
+		"$srcdir"/ts3db_postgresql.ini.sample
+}
+
+sha512sums="
+e3b2da0fd59b117659aef5f86fd79f8670724a535c22bd994a02af27ffd7edc9e8bbd6b79406268443d5add24f83d50ccd82128696cf82ec003db612de40e67b  teamspeak3-server_linux_alpine-3.13.7.tar.bz2
+c3414a5cd6ed96f3372ee44413a23e72c354094d4258ffdb35eaa7f361215119f7929aa07cdf091bc2e4ec99f3528914bb6971e84d484e2a8efb84286e422e23  ts3server.ini
+dc101e6f4f2e0e2b9f479da55eb33d495237f01c48d6ebec194e9aac1291f2419abfabfb26c4d2248d5de6a4f0e507c7dcb00334d9f8ae457f81b8d0430a23b2  ts3server_mariadb.ini.sample
+60993fa58beb07f3304e7603abe91dba2e23e3f6868a6e2894bf55e1e79c358defd1a08523e6ade16d1eb1042aad1783c76c2dff8e6ce282d08d77800c3357db  ts3db_mariadb.ini.sample
+751a071a95089eae9881ee8c9674f63f561a07ca009906efda3dc460711e2bea0751cb5d4271568b19675fec8aafee11d1e6867c2a668f82c89e7c365d7ee16e  ts3server_postgresql.ini.sample
+803763b93d2cc7e7b111ca9649deb6e582e1f0228bd9acd677f8d3f914cbed745381663562ada655618bdb955c07f0cdf02bdd4d8ce02861f082ca9aef8e480f  ts3db_postgresql.ini.sample
+cf1b4cde5bac67b28980793990f1637e06f03a8c02f3234fda6c562892bd4245906da5faa244e49f63989512efe7d2bfe7d618d8f31bc04349f3d7cfa704fefc  teamspeak3-server.initd
+"
