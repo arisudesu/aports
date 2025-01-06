@@ -1,8 +1,0 @@
-modname=@_modname@
-modver=@pkgver@-r@pkgrel@
-built_modules="@_modname@.ko"
-
-build() {
-	cp -a "$srcdir"/* "$builddir"
-	make $MAKEFLAGS -C "$kernel_srcdir" M="$builddir"
-}
