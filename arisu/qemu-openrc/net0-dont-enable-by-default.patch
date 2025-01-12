@@ -1,0 +1,12 @@
+diff -ruN a/qemu.confd b/qemu.confd
+--- a/qemu.confd	2025-01-12 03:08:08.081615000 +0300
++++ b/qemu.confd	2025-01-12 03:03:30.076707600 +0300
+@@ -126,7 +126,7 @@
+ #   net0_mac="52:54:12:34:56:78"
+ #   net0_device="e1000"
+ #
+-net0="bridge"
++#net0="bridge"
+ 
+ ##
+ # Hard-drives
