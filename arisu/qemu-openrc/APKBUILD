@@ -3,7 +3,7 @@
 # Origin: https://git.alpinelinux.org/aports/tree/community/qemu-openrc/APKBUILD?h=3.21-stable
 pkgname=qemu-openrc
 pkgver=0.11.1
-pkgrel=11
+pkgrel=12
 pkgdesc="OpenRC init scripts for QEMU/KVM"
 url="https://github.com/jirutka/qemu-openrc"
 arch="noarch"
@@ -12,7 +12,8 @@ depends="qemu socat"
 install="$pkgname.pre-install $pkgname.pre-upgrade"
 source="https://github.com/jirutka/$pkgname/archive/v$pkgver/$pkgname-$pkgver.tar.gz
 	loongarch64.patch
-	add-guest-agent-socket.patch"
+	add-guest-agent-socket.patch
+	add-vnc-websocket.patch"
 options="!check"
 
 package() {
@@ -23,4 +24,5 @@ sha512sums="
 aae6eb14a22f3a452e8bc523609e52b0d41af0e4ea5abf1faaf5f78a53dd4ca8905ded3a0cdbe8835a37c3b8218e20f407f80ef050d35cf2e6eb380ada26db67  qemu-openrc-0.11.1.tar.gz
 9675c1996e559fbbd3b5f7fe6ebabc1540b61a2cf43d403b95ae5089d196723b91097cd94c8be74ef24f654b4912f73741c515e0bf9a2ee1072fcb4d3671e632  loongarch64.patch
 d19ce15f68a826211dc99fe5ec2738bd1689f4c12ac2158e6d8a0f00607f1927026bd0e4466ce68f19df1a32a4b3cdd82ddb5e7adc073271f0cabe4dca3d2b25  add-guest-agent-socket.patch
+33198d8615c8274ff73397f8a2bdbdec64790b4891926743015ad0b8b6d8dd877cef32bc86b50bc78c01ed09fee4b72295e27b05b6116af5937a2ee957e71456  add-vnc-websocket.patch
 "

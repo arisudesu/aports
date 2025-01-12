@@ -1,0 +1,27 @@
+diff -ruN a/qemu.confd b/qemu.confd
+--- a/qemu.confd	2023-08-22 02:13:41.000000000 +0300
++++ b/qemu.confd	2025-01-12 02:55:09.169177600 +0300
+@@ -95,6 +95,11 @@
+ # base authentication is disabled.
+ #vnc_password=
+ 
++# VNC WebSocket listen address. If empty, it will not be enabled.
++# Requires VNC to be enabled. Valid values are: port, host:port,
++# empty to disable, "on" to listen on $vnc_listen:5700+$vnc_display.
++#vnc_websocket=
++
+ # Path of the QEMU monitor socket for this VM.
+ #monitor_socket="/run/qemu/${VM_NAME}/monitor.sock"
+ 
+diff -ruN a/qemu.initd b/qemu.initd
+--- a/qemu.initd	2023-08-22 02:13:41.000000000 +0300
++++ b/qemu.initd	2025-01-12 02:54:43.873409300 +0300
+@@ -94,7 +94,7 @@
+ 		command_args_push "-mem-path $hugepages_path"
+ 	fi
+ 	if [ -n "$vnc_display" ]; then
+-		command_args_push "-display vnc=${vnc_listen}:${vnc_display}${vnc_password:+",password"}"
++		command_args_push "-display vnc=${vnc_listen}:${vnc_display}${vnc_password:+",password"}${vnc_websocket:+",websocket=$vnc_websocket"}"
+ 	fi
+ 	command_args_push "$(net_args) $(disk_args) $(cdrom_args) $extra_args"
+ 
