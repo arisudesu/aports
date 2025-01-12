@@ -14,7 +14,7 @@ diff -ruN a/qemu.confd b/qemu.confd
 diff -ruN a/qemu.initd b/qemu.initd
 --- a/qemu.initd	2025-01-12 03:37:30.706400100 +0300
 +++ b/qemu.initd	2025-01-12 03:37:43.601959800 +0300
-@@ -29,6 +29,27 @@
+@@ -29,6 +29,30 @@
  : ${qemu_ga_socket:=/run/qemu/${VM_NAME}/qemu-ga.sock}
  : ${extra_args:=}
  
@@ -37,7 +37,10 @@ diff -ruN a/qemu.initd b/qemu.initd
 +	-monitor unix:$monitor_socket,server,nowait
 +	-chardev socket,path=$qemu_ga_socket,server,nowait,id=qga0
 +	-device virtio-serial
-+	-device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"}
++	-device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0
++	${_enable_kvm_arg}
++	-m size=$memory,slots=$memory_slots,maxmem=$memory_max
++	${_mem_path_arg}"}
 +
  name="VM $VM_NAME"
  description="QEMU virtual machine \"$VM_NAME\""
