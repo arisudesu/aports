@@ -1,22 +1,26 @@
 # Contributor:
 # Maintainer:
 # Origin: https://git.alpinelinux.org/aports/tree/community/qemu-openrc/APKBUILD?h=3.21-stable
-pkgname=qemu-openrc
+_origpkgname=qemu-openrc
+_origpkgrel=1
+pkgname=$_origpkgname-custom
 pkgver=0.11.1
-pkgrel=15
+pkgrel=0
 pkgdesc="OpenRC init scripts for QEMU/KVM"
 url="https://github.com/jirutka/qemu-openrc"
 arch="noarch"
 license="MIT"
 depends="qemu socat"
 install="$pkgname.pre-install $pkgname.pre-upgrade"
-source="https://github.com/jirutka/$pkgname/archive/v$pkgver/$pkgname-$pkgver.tar.gz
+source="https://github.com/jirutka/$_origpkgname/archive/v$pkgver/$_origpkgname-$pkgver.tar.gz
 	loongarch64.patch
 	add-guest-agent-socket.patch
 	add-vnc-websocket.patch
 	net0-dont-enable-by-default.patch
 	add-system-args-override.patch"
 options="!check"
+builddir="$srcdir"/$_origpkgname-$pkgver
+provides=$_origpkgname
 
 package() {
 	make install DESTDIR="$pkgdir" prefix=/usr
