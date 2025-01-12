@@ -3,7 +3,7 @@
 # Origin: https://git.alpinelinux.org/aports/tree/community/qemu-openrc/APKBUILD?h=3.21-stable
 pkgname=qemu-openrc
 pkgver=0.11.1
-pkgrel=13
+pkgrel=14
 pkgdesc="OpenRC init scripts for QEMU/KVM"
 url="https://github.com/jirutka/qemu-openrc"
 arch="noarch"
@@ -14,7 +14,8 @@ source="https://github.com/jirutka/$pkgname/archive/v$pkgver/$pkgname-$pkgver.ta
 	loongarch64.patch
 	add-guest-agent-socket.patch
 	add-vnc-websocket.patch
-	net0-dont-enable-by-default.patch"
+	net0-dont-enable-by-default.patch
+	add-system-args-override.patch"
 options="!check"
 
 package() {
@@ -27,4 +28,5 @@ aae6eb14a22f3a452e8bc523609e52b0d41af0e4ea5abf1faaf5f78a53dd4ca8905ded3a0cdbe883
 d19ce15f68a826211dc99fe5ec2738bd1689f4c12ac2158e6d8a0f00607f1927026bd0e4466ce68f19df1a32a4b3cdd82ddb5e7adc073271f0cabe4dca3d2b25  add-guest-agent-socket.patch
 33198d8615c8274ff73397f8a2bdbdec64790b4891926743015ad0b8b6d8dd877cef32bc86b50bc78c01ed09fee4b72295e27b05b6116af5937a2ee957e71456  add-vnc-websocket.patch
 d6b5d2eb721c367a80379cba4f17f63dc0e30f22e841fe44b20dd0e7bc1ccea86ff79f61de789f4e3b69b4b573e7e0cd1a04a5efa63e570823fe61bd5821fb89  net0-dont-enable-by-default.patch
+2fd77f6e219121edf435bd110b3f3a85f887e42d133851a783a624b4c32972a7e601db4a90e02c0e11ae45618883f7327596a990391814ddfa244dbbf0768a65  add-system-args-override.patch
 "

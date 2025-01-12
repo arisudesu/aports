@@ -1,0 +1,86 @@
+diff -ruN a/qemu.confd b/qemu.confd
+--- a/qemu.confd	2025-01-12 03:37:30.715926400 +0300
++++ b/qemu.confd	2025-01-12 03:37:43.596958100 +0300
+@@ -41,6 +41,9 @@
+ # QEMU system to emulate; you need qemu-system-${system_type} binary.
+ #system_type="x86_64"
+ 
++# Specify this if you need to completely override QEMU system arguments.
++#system_args=""
++
+ # Whether to enable KVM (hardware-assisted virtualization).
+ #enable_kvm="yes"
+ 
+diff -ruN a/qemu.initd b/qemu.initd
+--- a/qemu.initd	2025-01-12 03:37:30.706400100 +0300
++++ b/qemu.initd	2025-01-12 03:37:43.601959800 +0300
+@@ -29,6 +29,27 @@
+ : ${qemu_ga_socket:=/run/qemu/${VM_NAME}/qemu-ga.sock}
+ : ${extra_args:=}
+ 
++[ "$memory" = "$memory_max" ] && memory_slots=0
++yesno "$enable_kvm" && _enable_kvm_arg="-enable-kvm"
++yesno "$memory_hugepages" && _mem_path_arg="-mem-path $hugepages_path"
++
++: ${system_args:="
++	-name $VM_NAME,process=$VM_NAME
++	-nodefaults
++	-no-user-config
++	-cpu $cpu_model
++	-overcommit mem-lock=off
++	-rtc base=$rtc_base
++	-smp cpus=$smp_cpus,maxcpus=$smp_cpus_max
++	-device virtio-balloon
++	-vga $vga
++	-device virtio-rng-pci
++	-device virtio-scsi-pci,id=scsi
++	-monitor unix:$monitor_socket,server,nowait
++	-chardev socket,path=$qemu_ga_socket,server,nowait,id=qga0
++	-device virtio-serial
++	-device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"}
++
+ name="VM $VM_NAME"
+ description="QEMU virtual machine \"$VM_NAME\""
+ 
+@@ -43,22 +64,7 @@
+ description_vmstatus='Show status reported by QEMU'
+ 
+ command="/usr/bin/qemu-system-$system_type"
+-command_args="
+-	-name $VM_NAME,process=$VM_NAME
+-	-nodefaults
+-	-no-user-config
+-	-cpu $cpu_model
+-	-overcommit mem-lock=off
+-	-rtc base=$rtc_base
+-	-smp cpus=$smp_cpus,maxcpus=$smp_cpus_max
+-	-device virtio-balloon
+-	-vga $vga
+-	-device virtio-rng-pci
+-	-device virtio-scsi-pci,id=scsi
+-	-monitor unix:$monitor_socket,server,nowait
+-	-chardev socket,path=$qemu_ga_socket,server,nowait,id=qga0
+-	-device virtio-serial
+-	-device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"
++command_args="$system_args"
+ command_background='yes'
+ command_user="$user"
+ command_group="$group"
+@@ -86,17 +92,6 @@
+ 		return 1
+ 	fi
+ 
+-	if yesno "$enable_kvm"; then
+-		command_args_push '-enable-kvm'
+-	fi
+-	if [ "$memory" = "$memory_max" ]; then
+-		memory_slots="0"
+-	fi
+-	command_args_push "-m size=$memory,slots=$memory_slots,maxmem=$memory_max"
+-
+-	if yesno "$memory_hugepages"; then
+-		command_args_push "-mem-path $hugepages_path"
+-	fi
+ 	if [ -n "$vnc_display" ]; then
+ 		command_args_push "-display vnc=${vnc_listen}:${vnc_display}${vnc_password:+",password"}${vnc_websocket:+",websocket=$vnc_websocket"}"
+ 	fi
