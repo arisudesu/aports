@@ -1,8 +1,9 @@
 # Contributor:
 # Maintainer:
 # Source: https://git.alpinelinux.org/aports/tree/community/telegraf/APKBUILD?h=3.21-stable
-pkgname=telegraf-custom
 _origpkgname=telegraf
+_origpkgrel=0
+pkgname=$_origpkgname-custom
 pkgver=1.32.3
 pkgrel=0
 _commit=2fd5bf4f2 # git rev-parse --short HEAD
@@ -20,7 +21,7 @@ source="telegraf-$pkgver.tar.gz::https://github.com/influxdata/telegraf/archive/
 	telegraf.initd
 	telegraf.confd
 	"
-builddir="$srcdir/telegraf-$pkgver"
+builddir="$srcdir"/telegraf-$pkgver
 
 _custom_plugins="inputs.cpu
 	inputs.disk
