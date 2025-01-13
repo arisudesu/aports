@@ -5,7 +5,7 @@ _origpkgname=telegraf
 _origpkgrel=0
 pkgname=$_origpkgname-custom
 pkgver=1.32.3
-pkgrel=0
+pkgrel=1
 _commit=2fd5bf4f2 # git rev-parse --short HEAD
 _branch=release-${pkgver%.*}
 pkgdesc="A plugin-driven server agent for collecting & reporting metrics, part of the InfluxDB project"
@@ -22,6 +22,7 @@ source="telegraf-$pkgver.tar.gz::https://github.com/influxdata/telegraf/archive/
 	telegraf.confd
 	"
 builddir="$srcdir"/telegraf-$pkgver
+provides=$_origpkgname
 
 _custom_plugins="inputs.cpu
 	inputs.disk
