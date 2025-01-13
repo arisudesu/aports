@@ -1,9 +1,11 @@
 # Contributor:
 # Maintainer:
 # Origin: https://git.alpinelinux.org/aports/tree/community/lxcfs/APKBUILD?h=3.21-stable
-pkgname=lxcfs
+_origpkgname=lxcfs
+_origpkgrel=0
+pkgname=$_origpkgname-custom
 pkgver=6.0.1
-pkgrel=10
+pkgrel=0
 pkgdesc="FUSE filesystem for LXC"
 url="https://linuxcontainers.org/lxcfs"
 arch="all"
@@ -17,6 +19,8 @@ source="https://linuxcontainers.org/downloads/lxcfs/lxcfs-$pkgver.tar.gz
 	README.alpine
 	fix-undeclared-path-max.patch
 	"
+builddir="$srcdir"/$_origpkgname-$pkgver
+provides=$_origpkgname
 
 build() {
 	abuild-meson \
@@ -32,10 +36,10 @@ check() {
 
 package() {
 	DESTDIR="$pkgdir" meson install --no-rebuild -C output
-	install -m755 -D "$srcdir"/$pkgname.initd \
-		"$pkgdir"/etc/init.d/$pkgname
-	install -m644 -D "$srcdir"/$pkgname.confd \
-		"$pkgdir"/etc/conf.d/$pkgname
+	install -m755 -D "$srcdir"/$_origpkgname.initd \
+		"$pkgdir"/etc/init.d/$_origpkgname
+	install -m644 -D "$srcdir"/$_origpkgname.confd \
+		"$pkgdir"/etc/conf.d/$_origpkgname
 	install -m644 -D "$srcdir"/README.alpine \
 		"$pkgdir"/usr/share/doc/lxcfs/README.alpine
 }
