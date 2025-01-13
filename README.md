@@ -36,17 +36,3 @@ Building repo locally
 
 	mkdir ../packages
 	ALPINE_VERSION=3.20 PACKAGER_PRIVKEY=~/.abuild/arisudesu@users.noreply.github.com-66758c7b.rsa ./github-build.sh arisu
-
-Note on derivatives from official packages
-------------------------------------------
-
-In this repo, some packages have the same names as the official ones, but they are built differently. These are the packages
-for which I prefer those changes to be packaged, rather than applied manually or somehow else on the system. Examples of such
-changes are [additional args for lxcfs process](./arisu/lxcfs/lxcfs.initd#L119), [ability to shutdown guests via guest-agent
-in qemu-openrc](./arisu/qemu-openrc/add-guest-agent-socket.patch) &dash; I really don't want to edit init scripts and fix them
-every time these official packages are updated; I rather copy the package and maintain my own modified variants, applying
-upstream changes to them periodically.
-
-For this derived packages to replace official ones, I set their `$pkgrel` higher than official. Also, starting with Alpine 3.21,
-I will add 10 to `$pkgrel` in my packages initially, as a safety margin, to have some time to borrow upstream changes, before
-official packages catch up with `$pkgrel` and replace my modified versions.
