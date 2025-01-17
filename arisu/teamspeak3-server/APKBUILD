@@ -40,8 +40,6 @@ package() {
 	install -d -m755 "$pkgdir"/usr/bin
 	ln -s /usr/lib/teamspeak3-server/ts3server "$pkgdir"/usr/bin/
 
-	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/teamspeak3-server/ts3server.ini
-
 	install -D -m755 "$srcdir"/teamspeak3-server.initd "$pkgdir"/etc/init.d/teamspeak3-server
 }
 
