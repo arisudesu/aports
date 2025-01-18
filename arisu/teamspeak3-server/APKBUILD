@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=teamspeak3-server
 pkgver=3.13.7
-pkgrel=2
+pkgrel=3
 pkgdesc="A server software for hosting quality voice communication via the internet"
 url="https://www.teamspeak.com"
 arch="x86_64"
@@ -67,7 +67,7 @@ mariadb() {
 		"$builddir"/redist/libmariadb.so.2
 	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
 	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/usr/lib/teamspeak3-server/sql/
-	install -D -m644 -t "$subpkgdir"/usr/share/teamspeak3-server/ \
+	install -D -m644 -t "$subpkgdir"/etc/teamspeak3-server/ \
 		"$srcdir"/ts3server_mariadb.ini.sample \
 		"$srcdir"/ts3db_mariadb.ini.sample
 }
@@ -79,7 +79,7 @@ postgresql() {
 		"$builddir"/libts3db_postgresql.so
 	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
 	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/usr/lib/teamspeak3-server/sql/
-	install -D -m644 -t "$subpkgdir"/usr/share/teamspeak3-server/ \
+	install -D -m644 -t "$subpkgdir"/etc/teamspeak3-server/ \
 		"$srcdir"/ts3server_postgresql.ini.sample \
 		"$srcdir"/ts3db_postgresql.ini.sample
 }
