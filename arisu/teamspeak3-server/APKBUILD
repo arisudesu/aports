@@ -2,13 +2,19 @@
 # Maintainer:
 pkgname=teamspeak3-server
 pkgver=3.13.7
-pkgrel=1
+pkgrel=2
 pkgdesc="A server software for hosting quality voice communication via the internet"
 url="https://www.teamspeak.com"
 arch="x86_64"
 license="Apache-2.0 Boost-1.0 BSD LGPL-2.1 LGPL-3 MIT custom"
 install="$pkgname.pre-install"
-subpackages="$pkgname-doc $pkgname-openrc $pkgname-mariadb $pkgname-postgresql"
+subpackages="
+	$pkgname-doc
+	$pkgname-openrc
+	$pkgname-db-shared:db_shared
+	$pkgname-mariadb
+	$pkgname-postgresql
+	"
 source="https://files.teamspeak-services.com/releases/server/$pkgver/teamspeak3-server_linux_alpine-$pkgver.tar.bz2
 	ts3server.ini
 	ts3server_mariadb.ini.sample
@@ -36,6 +42,11 @@ package() {
 	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/usr/lib/teamspeak3-server/sql/
 
 	install -D -m644 "$builddir"/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+	install -D -m644 "$builddir"/CHANGELOG "$pkgdir"/usr/share/doc/$pkgname/CHANGELOG
+	install -d -m755 "$pkgdir"/usr/share/doc/$pkgname/ts3server
+	cp -r "$builddir"/doc/*.md "$builddir"/doc/*.txt "$pkgdir"/usr/share/doc/$pkgname/ts3server/
+	install -d -m755 "$pkgdir"/usr/share/doc/$pkgname/html
+	cp -r "$builddir"/doc/serverquery/* "$pkgdir"/usr/share/doc/$pkgname/html/
 
 	install -d -m755 "$pkgdir"/usr/bin
 	ln -s /usr/lib/teamspeak3-server/ts3server "$pkgdir"/usr/bin/
@@ -43,22 +54,31 @@ package() {
 	install -D -m755 "$srcdir"/teamspeak3-server.initd "$pkgdir"/etc/init.d/teamspeak3-server
 }
 
+db_shared() {
+	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
+	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/usr/lib/teamspeak3-server/sql/
+}
+
 mariadb() {
-	install -D -m755 "$builddir"/libts3db_mariadb.so "$subpkgdir"/usr/lib/teamspeak3-server/libts3db_mariadb.so
-	install -D -m755 "$builddir"/redist/libmariadb.so.2 "$subpkgdir"/usr/lib/teamspeak3-server/redist/libmariadb.so.2
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
+
+	install -D -m755 -t "$subpkgdir"/usr/lib/teamspeak3-server/ \
+		"$builddir"/libts3db_mariadb.so \
+		"$builddir"/redist/libmariadb.so.2
 	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
 	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/usr/lib/teamspeak3-server/sql/
-	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/usr/lib/teamspeak3-server/sql/
 	install -D -m644 -t "$subpkgdir"/usr/share/teamspeak3-server/ \
 		"$srcdir"/ts3server_mariadb.ini.sample \
 		"$srcdir"/ts3db_mariadb.ini.sample
 }
 
 postgresql() {
-	install -D -m755 "$builddir"/libts3db_postgresql.so "$subpkgdir"/usr/lib/teamspeak3-server/libts3db_postgresql.so
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
+
+	install -D -m755 -t "$subpkgdir"/usr/lib/teamspeak3-server/ \
+		"$builddir"/libts3db_postgresql.so
 	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
 	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/usr/lib/teamspeak3-server/sql/
-	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/usr/lib/teamspeak3-server/sql/
 	install -D -m644 -t "$subpkgdir"/usr/share/teamspeak3-server/ \
 		"$srcdir"/ts3server_postgresql.ini.sample \
 		"$srcdir"/ts3db_postgresql.ini.sample
