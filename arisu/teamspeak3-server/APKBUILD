@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=teamspeak3-server
 pkgver=3.13.7
-pkgrel=3
+pkgrel=4
 pkgdesc="A server software for hosting quality voice communication via the internet"
 url="https://www.teamspeak.com"
 arch="x86_64"
@@ -24,22 +24,22 @@ source="https://files.teamspeak-services.com/releases/server/$pkgver/${pkgname}_
 	$pkgname.initd
 	"
 builddir="$srcdir"/${pkgname}_linux_alpine
-options="!check !tracedeps"
+options="!check !tracedeps !fhs" # installs to /opt
 
 package() {
-	install -D -m755 -t "$pkgdir"/usr/lib/$pkgname/ \
+	install -D -m755 -t "$pkgdir"/opt/$pkgname/ \
 		"$builddir"/ts3server \
 		"$builddir"/libts3_ssh.so \
 		"$builddir"/libts3db_sqlite3.so
 
 	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/$pkgname/ts3server.ini
 
-	install -d -m755 "$pkgdir"/usr/lib/$pkgname/serverquerydocs
-	cp -r "$builddir"/serverquerydocs/* "$pkgdir"/usr/lib/$pkgname/serverquerydocs/
+	install -d -m755 "$pkgdir"/opt/$pkgname/serverquerydocs
+	cp -r "$builddir"/serverquerydocs/* "$pkgdir"/opt/$pkgname/serverquerydocs/
 
-	install -d -m755 "$pkgdir"/usr/lib/$pkgname/sql
-	cp -r "$builddir"/sql/*.sql "$pkgdir"/usr/lib/$pkgname/sql/
-	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/usr/lib/$pkgname/sql/
+	install -d -m755 "$pkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/*.sql "$pkgdir"/opt/$pkgname/sql/
+	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/opt/$pkgname/sql/
 
 	install -D -m644 "$builddir"/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 	install -D -m644 "$builddir"/CHANGELOG "$pkgdir"/usr/share/doc/$pkgname/CHANGELOG
@@ -48,25 +48,25 @@ package() {
 	install -d -m755 "$pkgdir"/usr/share/doc/$pkgname/html
 	cp -r "$builddir"/doc/serverquery/* "$pkgdir"/usr/share/doc/$pkgname/html/
 
-	install -d -m755 "$pkgdir"/usr/bin
-	ln -s /usr/lib/$pkgname/ts3server "$pkgdir"/usr/bin/
+	install -d -m755 "$pkgdir"/opt/bin
+	ln -s ../$pkgname/ts3server "$pkgdir"/opt/bin/
 
 	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
 }
 
 db_shared() {
-	install -d -m755 "$subpkgdir"/usr/lib/$pkgname/sql
-	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/usr/lib/$pkgname/sql/
+	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/opt/$pkgname/sql/
 }
 
 mariadb() {
 	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
 
-	install -D -m755 -t "$subpkgdir"/usr/lib/$pkgname/ \
+	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
 		"$builddir"/libts3db_mariadb.so \
 		"$builddir"/redist/libmariadb.so.2
-	install -d -m755 "$subpkgdir"/usr/lib/$pkgname/sql
-	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/usr/lib/$pkgname/sql/
+	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/opt/$pkgname/sql/
 	install -D -m644 -t "$subpkgdir"/etc/$pkgname/ \
 		"$srcdir"/ts3server_mariadb.ini.sample \
 		"$srcdir"/ts3db_mariadb.ini.sample
@@ -75,10 +75,10 @@ mariadb() {
 postgresql() {
 	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
 
-	install -D -m755 -t "$subpkgdir"/usr/lib/$pkgname/ \
+	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
 		"$builddir"/libts3db_postgresql.so
-	install -d -m755 "$subpkgdir"/usr/lib/$pkgname/sql
-	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/usr/lib/$pkgname/sql/
+	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/opt/$pkgname/sql/
 	install -D -m644 -t "$subpkgdir"/etc/$pkgname/ \
 		"$srcdir"/ts3server_postgresql.ini.sample \
 		"$srcdir"/ts3db_postgresql.ini.sample
@@ -86,10 +86,10 @@ postgresql() {
 
 sha512sums="
 e3b2da0fd59b117659aef5f86fd79f8670724a535c22bd994a02af27ffd7edc9e8bbd6b79406268443d5add24f83d50ccd82128696cf82ec003db612de40e67b  teamspeak3-server_linux_alpine-3.13.7.tar.bz2
-c3414a5cd6ed96f3372ee44413a23e72c354094d4258ffdb35eaa7f361215119f7929aa07cdf091bc2e4ec99f3528914bb6971e84d484e2a8efb84286e422e23  ts3server.ini
-dc101e6f4f2e0e2b9f479da55eb33d495237f01c48d6ebec194e9aac1291f2419abfabfb26c4d2248d5de6a4f0e507c7dcb00334d9f8ae457f81b8d0430a23b2  ts3server_mariadb.ini.sample
+3fa8c1639bce5faa2aebe95938e557b37d77e3130e343714891725545980c49277960b16281ee1c48e78c6722875bb56e5be872799a51f12e76a718e82efe5ac  ts3server.ini
+f89da662279e050c7ce6056f9871aacecfb8b0f7aa6837c5c93236f9c942334d7949b400e671a663f98a9f994219a4cc410db6577672b79e92bf6a49b9f7da29  ts3server_mariadb.ini.sample
 60993fa58beb07f3304e7603abe91dba2e23e3f6868a6e2894bf55e1e79c358defd1a08523e6ade16d1eb1042aad1783c76c2dff8e6ce282d08d77800c3357db  ts3db_mariadb.ini.sample
-751a071a95089eae9881ee8c9674f63f561a07ca009906efda3dc460711e2bea0751cb5d4271568b19675fec8aafee11d1e6867c2a668f82c89e7c365d7ee16e  ts3server_postgresql.ini.sample
+97c01b120b5f48fe72c150bacf013ec7cb94c7626bf6354437fb04d9ac5326b59b44e299d41e278db9cc5992e21100aed114239b58a855f1874010a1f828db9e  ts3server_postgresql.ini.sample
 803763b93d2cc7e7b111ca9649deb6e582e1f0228bd9acd677f8d3f914cbed745381663562ada655618bdb955c07f0cdf02bdd4d8ce02861f082ca9aef8e480f  ts3db_postgresql.ini.sample
-cf1b4cde5bac67b28980793990f1637e06f03a8c02f3234fda6c562892bd4245906da5faa244e49f63989512efe7d2bfe7d618d8f31bc04349f3d7cfa704fefc  teamspeak3-server.initd
+13805b15048cfa776db2411eab9614a2be5fcff135c3e16cbc7fc24cfc0ddbbe91260c38aef52b5d79c68701817596adeeb1de13cf43c62c4a26563ae4b67bd9  teamspeak3-server.initd
 "

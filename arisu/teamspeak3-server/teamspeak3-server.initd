@@ -7,7 +7,7 @@ name="TeamSpeak3 Server"
 pidfile="/run/${RC_SVCNAME}.pid"
 start_stop_daemon_args="--chdir /var/lib/teamspeak --env TS3SERVER_LICENSE=accept"
 
-command="/usr/bin/ts3server"
+command="/opt/bin/ts3server"
 command_args="inifile=${config}"
 command_background="true"
 command_group="teamspeak"
