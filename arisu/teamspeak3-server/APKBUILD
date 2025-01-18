@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=teamspeak3-server
 pkgver=3.13.7
-pkgrel=5
+pkgrel=6
 pkgdesc="A server software for hosting quality voice communication via the internet"
 url="https://www.teamspeak.com"
 arch="x86_64"
@@ -11,7 +11,7 @@ install="$pkgname.pre-install"
 subpackages="
 	$pkgname-doc
 	$pkgname-openrc
-	$pkgname-db-shared:db_shared
+	$pkgname-db-common:db_common
 	$pkgname-mariadb
 	$pkgname-postgresql
 	"
@@ -54,13 +54,13 @@ package() {
 	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
 }
 
-db_shared() {
+db_common() {
 	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
 	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/opt/$pkgname/sql/
 }
 
 mariadb() {
-	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-common=$pkgver-r$pkgrel"
 
 	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
 		"$builddir"/libts3db_mariadb.so \
@@ -73,7 +73,7 @@ mariadb() {
 }
 
 postgresql() {
-	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel libpq"
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-common=$pkgver-r$pkgrel libpq"
 
 	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
 		"$builddir"/libts3db_postgresql.so
