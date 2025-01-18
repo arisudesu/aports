@@ -15,31 +15,31 @@ subpackages="
 	$pkgname-mariadb
 	$pkgname-postgresql
 	"
-source="https://files.teamspeak-services.com/releases/server/$pkgver/teamspeak3-server_linux_alpine-$pkgver.tar.bz2
+source="https://files.teamspeak-services.com/releases/server/$pkgver/${pkgname}_linux_alpine-$pkgver.tar.bz2
 	ts3server.ini
 	ts3server_mariadb.ini.sample
 	ts3db_mariadb.ini.sample
 	ts3server_postgresql.ini.sample
 	ts3db_postgresql.ini.sample
-	teamspeak3-server.initd
+	$pkgname.initd
 	"
-builddir="$srcdir/teamspeak3-server_linux_alpine"
+builddir="$srcdir"/${pkgname}_linux_alpine
 options="!check !tracedeps"
 
 package() {
-	install -D -m755 -t "$pkgdir"/usr/lib/teamspeak3-server/ \
+	install -D -m755 -t "$pkgdir"/usr/lib/$pkgname/ \
 		"$builddir"/ts3server \
 		"$builddir"/libts3_ssh.so \
 		"$builddir"/libts3db_sqlite3.so
 
-	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/teamspeak3-server/ts3server.ini
+	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/$pkgname/ts3server.ini
 
-	install -d -m755 "$pkgdir"/usr/lib/teamspeak3-server/serverquerydocs
-	cp -r "$builddir"/serverquerydocs/* "$pkgdir"/usr/lib/teamspeak3-server/serverquerydocs/
+	install -d -m755 "$pkgdir"/usr/lib/$pkgname/serverquerydocs
+	cp -r "$builddir"/serverquerydocs/* "$pkgdir"/usr/lib/$pkgname/serverquerydocs/
 
-	install -d -m755 "$pkgdir"/usr/lib/teamspeak3-server/sql
-	cp -r "$builddir"/sql/*.sql "$pkgdir"/usr/lib/teamspeak3-server/sql/
-	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/usr/lib/teamspeak3-server/sql/
+	install -d -m755 "$pkgdir"/usr/lib/$pkgname/sql
+	cp -r "$builddir"/sql/*.sql "$pkgdir"/usr/lib/$pkgname/sql/
+	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/usr/lib/$pkgname/sql/
 
 	install -D -m644 "$builddir"/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 	install -D -m644 "$builddir"/CHANGELOG "$pkgdir"/usr/share/doc/$pkgname/CHANGELOG
@@ -49,25 +49,25 @@ package() {
 	cp -r "$builddir"/doc/serverquery/* "$pkgdir"/usr/share/doc/$pkgname/html/
 
 	install -d -m755 "$pkgdir"/usr/bin
-	ln -s /usr/lib/teamspeak3-server/ts3server "$pkgdir"/usr/bin/
+	ln -s /usr/lib/$pkgname/ts3server "$pkgdir"/usr/bin/
 
-	install -D -m755 "$srcdir"/teamspeak3-server.initd "$pkgdir"/etc/init.d/teamspeak3-server
+	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
 }
 
 db_shared() {
-	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
-	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/usr/lib/teamspeak3-server/sql/
+	install -d -m755 "$subpkgdir"/usr/lib/$pkgname/sql
+	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/usr/lib/$pkgname/sql/
 }
 
 mariadb() {
 	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
 
-	install -D -m755 -t "$subpkgdir"/usr/lib/teamspeak3-server/ \
+	install -D -m755 -t "$subpkgdir"/usr/lib/$pkgname/ \
 		"$builddir"/libts3db_mariadb.so \
 		"$builddir"/redist/libmariadb.so.2
-	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
-	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/usr/lib/teamspeak3-server/sql/
-	install -D -m644 -t "$subpkgdir"/etc/teamspeak3-server/ \
+	install -d -m755 "$subpkgdir"/usr/lib/$pkgname/sql
+	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/usr/lib/$pkgname/sql/
+	install -D -m644 -t "$subpkgdir"/etc/$pkgname/ \
 		"$srcdir"/ts3server_mariadb.ini.sample \
 		"$srcdir"/ts3db_mariadb.ini.sample
 }
@@ -75,11 +75,11 @@ mariadb() {
 postgresql() {
 	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
 
-	install -D -m755 -t "$subpkgdir"/usr/lib/teamspeak3-server/ \
+	install -D -m755 -t "$subpkgdir"/usr/lib/$pkgname/ \
 		"$builddir"/libts3db_postgresql.so
-	install -d -m755 "$subpkgdir"/usr/lib/teamspeak3-server/sql
-	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/usr/lib/teamspeak3-server/sql/
-	install -D -m644 -t "$subpkgdir"/etc/teamspeak3-server/ \
+	install -d -m755 "$subpkgdir"/usr/lib/$pkgname/sql
+	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/usr/lib/$pkgname/sql/
+	install -D -m644 -t "$subpkgdir"/etc/$pkgname/ \
 		"$srcdir"/ts3server_postgresql.ini.sample \
 		"$srcdir"/ts3db_postgresql.ini.sample
 }
