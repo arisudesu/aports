@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=teamspeak3-server
 pkgver=3.13.7
-pkgrel=4
+pkgrel=5
 pkgdesc="A server software for hosting quality voice communication via the internet"
 url="https://www.teamspeak.com"
 arch="x86_64"
@@ -73,7 +73,7 @@ mariadb() {
 }
 
 postgresql() {
-	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel"
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-shared=$pkgver-r$pkgrel libpq"
 
 	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
 		"$builddir"/libts3db_postgresql.so
