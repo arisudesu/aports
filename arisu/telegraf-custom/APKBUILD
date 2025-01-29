@@ -4,9 +4,9 @@
 _origpkgname=telegraf
 _origpkgrel=0
 pkgname=$_origpkgname-custom
-pkgver=1.32.3
-pkgrel=2
-_commit=2fd5bf4f2 # git rev-parse --short HEAD
+pkgver=1.33.1
+pkgrel=0
+_commit=44f3a5045 # git rev-parse --short HEAD
 _branch=release-${pkgver%.*}
 pkgdesc="A plugin-driven server agent for collecting & reporting metrics, part of the InfluxDB project"
 url="https://www.influxdata.com/time-series-platform/telegraf/"
@@ -18,7 +18,6 @@ install="$pkgname.pre-install"
 subpackages="$pkgname-openrc $pkgname-doc"
 options="net"
 source="telegraf-$pkgver.tar.gz::https://github.com/influxdata/telegraf/archive/v$pkgver.tar.gz
-	fix-testcase-timestamp-hardcoding-2024.patch
 	telegraf.initd
 	telegraf.confd
 	"
@@ -80,8 +79,7 @@ package() {
 }
 
 sha512sums="
-84c779e50e181e639630659357f3ba2928ea8317a79d36d551a69aa15e24133299d9c31aa0f78d047de9d8eae0209ae37abdf68d9829fae67973f759fc036bdc  telegraf-1.32.3.tar.gz
-94c2832246349f9f9fa4baa02b0874e0408dbb072f6c8dc89abfa7e578603b6f056953865cf3765d7f7c4840ddea9b780389f228973a0beb78e00bc299378828  fix-testcase-timestamp-hardcoding-2024.patch
+819d23d0e0fed8eda04b663fcbb14857bb7a304bb8702aab1b75a971d71e9cfeb7dd29123363aca5c33b4103b864d9ab4452add513e1fd3389cf30e71906d19e  telegraf-1.33.1.tar.gz
 abe483deb8e12fe140de2c36d17bbfbc97ed7a5de8c3d76162357f7ba6575b8236b7197b92a26ed6d54f95c1ccbfc12ca62d6cc0371bf49d10a1ea5622a51ed1  telegraf.initd
 d1a9aa57f8b5179f2d8396518b9db757fe1c40337b515c1f750cf577683ff15f3174bc757afa70d880a1fef809c873e6aa0da1b903a5a97934c14965712d47a4  telegraf.confd
 "
