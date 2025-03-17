@@ -1,6 +1,7 @@
 # Contributor:
 # Maintainer:
 # Origin: https://git.alpinelinux.org/aports/tree/testing/maddy/APKBUILD
+_origpkgrel=0
 pkgname=maddy
 pkgver=0.8.1
 pkgrel=0
