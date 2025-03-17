@@ -36,3 +36,17 @@ Building repo locally
 
 	mkdir ../packages
 	ALPINE_VERSION=3.20 PACKAGER_PRIVKEY=~/.abuild/arisudesu@users.noreply.github.com-66758c7b.rsa ./github-build.sh arisu
+
+Packages versioning
+-------------------
+
+Importing from alpine testing:
+1) reset `$pkgrel` from 0 and increase as usual
+2) store upstream `$pkgrel` in `$_origpkgrel` variable for reference
+
+Importing as `$pkgname-custom` from alpine release:
+1) reset `$pkgrel` from 0 and increase as usual
+2) store upstream `$pkgrel` in `$_origpkgrel` variable for reference
+
+Original packages:
+1) start `$pkgrel` from 0 and increase as usual
