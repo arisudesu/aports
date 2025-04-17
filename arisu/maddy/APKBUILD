@@ -1,10 +1,10 @@
 # Contributor:
 # Maintainer:
 # Origin: https://git.alpinelinux.org/aports/tree/testing/maddy/APKBUILD
-_origpkgrel=1
+_origpkgrel=2
 pkgname=maddy
 pkgver=0.8.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Composable all-in-one mail server"
 url="https://maddy.email/"
 license="GPL-3.0-or-later"
