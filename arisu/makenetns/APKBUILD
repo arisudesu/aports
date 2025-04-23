@@ -1,0 +1,28 @@
+# Contributor:
+pkgname=makenetns
+pkgver=0.1.0
+pkgrel=0
+pkgdesc="A helper to run processes unshared network namespaces"
+url="https://github.com/arisudesu/aports/tree/master/arisu/makenetns"
+arch="all"
+license="MIT"
+depends="iproute2"
+source="Makefile
+	makenetns.c
+	"
+options="!check"
+builddir="$srcdir"
+
+build() {
+	make PREFIX=/usr
+}
+
+package() {
+	make PREFIX=/usr DESTDIR="$pkgdir" \
+		-C "$builddir" install
+}
+
+sha512sums="
+722dfab09d1a3d6e2e8d0d5df5a6e94a4c8daa4fa65d280fd19efe0ca78440e854fec7acc4c2f29ab58d246b7f932df4666e2c9506b3588e7c7848688d95e2c1  Makefile
+40527de3e6c5a4839bf20c14f66a1fbb1bb19e5f182edc5cc5f90d1627a41fc08b9d941c32a10b8de8a089a29cd16e4a486faf47e451d7971dcee23759fad7fe  makenetns.c
+"
