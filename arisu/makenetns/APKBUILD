@@ -1,7 +1,7 @@
 # Contributor:
 pkgname=makenetns
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="A helper to run processes unshared network namespaces"
 url="https://github.com/arisudesu/aports/tree/master/arisu/makenetns"
 arch="all"
@@ -25,7 +25,7 @@ package() {
 		-C "$builddir" install
 
 	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
-	install -D -m755 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -D -m644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
 }
 
 sha512sums="
