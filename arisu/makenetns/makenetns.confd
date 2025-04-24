@@ -1,0 +1,8 @@
+# Name of the virtual ethernet pair in the host namespace
+#interface="veth0"
+
+# IP address for the host end of the veth pair
+#host_addr="10.0.2.0/31"
+
+# IP address for the namespace end of the veth pair
+#netns_addr="10.0.2.1/31"

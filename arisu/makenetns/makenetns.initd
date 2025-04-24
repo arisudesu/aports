@@ -1,0 +1,63 @@
+#!/sbin/openrc-run
+
+mount_dir="/var/run/netns"
+mount_name="${RC_SVCNAME#makenetns.}"
+mount_path="$mount_dir/$mount_name"
+
+depend() {
+	use net
+}
+
+checkconfig() {
+	if [ "$RC_SVCNAME" = 'makenetns' ]; then
+		eerror ''
+		eerror 'You are not supposed to run this service script directly. Instead, create a'
+		eerror 'symlink for the service script and copy a configuration file and modify it:'
+		eerror ''
+		eerror '    ln -s makenetns /etc/init.d/makenetns.example'
+		eerror '    cp /etc/conf.d/makenetns /etc/conf.d/makenetns.example'
+		return 1
+	fi
+	if [ -z "$interface" ] || [ -z "$host_addr" ] || [ -z "$netns_addr" ]; then
+		eerror ''
+		eerror "You need to specify variables 'interface', 'host_addr', 'netns_addr' in /etc/conf.d/${RC_SVCNAME}"
+		return 1
+	fi
+}
+
+start_pre() {
+	checkconfig || return
+}
+
+start() {
+	ebegin "Creating network namespace $mount_name"
+
+	checkpath -d "$mount_dir"  || return 1
+
+	if [ -e "$mount_path" ]; then
+		ewarn "Mount path $mount_path for namespace already exists"
+	fi
+
+	checkpath -f "$mount_path" || return 1
+
+	makenetns "$interface" "$host_addr" "$netns_addr" -- mount --bind /proc/self/ns/net "$mount_path"
+
+	eend $?
+}
+
+stop() {
+	ebegin "Removing network namespace $mount_name"
+
+	if ! mountinfo -q "$mount_path"; then
+		ewarn "Mount path $mount_path for namespace is not mounted"
+	else
+		umount "$mount_path" || return 1
+		rm -f  "$mount_path" || return 1
+	fi
+
+	if [ -e "$mount_path" ]; then
+		ewarn "File $mount_path exists but was not touched; must be removed manually"
+	fi
+
+	eend $?
+}
