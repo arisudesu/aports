@@ -1,0 +1,40 @@
+--- a/.make/go.mk
++++ b/.make/go.mk
+@@ -77,7 +77,7 @@
+ 
+ .PHONY: install
+ install: $(SOURCES)
+-	go install -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' ./cmd/$(NAME)
++	go install -v -tags '$(TAGS)' ./cmd/$(NAME)
+ 
+ .PHONY: build-all
+ build-all: build build-debug
+@@ -89,7 +89,7 @@
+ build-debug: $(BIN)/$(EXECUTABLE)-debug
+ 
+ $(BIN)/$(EXECUTABLE): $(SOURCES)
+-	$(GOBUILD) -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $@ ./cmd/$(NAME)
++	$(GOBUILD) -v -tags '$(TAGS)' -o $@ ./cmd/$(NAME)
+ 
+ $(BIN)/$(EXECUTABLE)-debug: $(SOURCES)
+ 	$(GOBUILD) -v -tags '$(TAGS)' -ldflags '$(DEBUG_LDFLAGS)' -gcflags '$(GCFLAGS)' -o $@ ./cmd/$(NAME)
+--- a/services/web/Makefile
++++ b/services/web/Makefile
+@@ -22,7 +22,7 @@
+ .PHONY: pull-assets
+ pull-assets:
+ 	echo "using unreleased assets from branch $(WEB_ASSETS_BRANCH), this should not be used for official releases"
+-	git clean -xfd assets
++#	git clean -xfd assets
+ 	@if [ ! -d tmp/assets/core/origin ]; then \
+ 		echo "no web assets found, initializing"; \
+ 		git clone -b main --depth 1 https://github.com/opencloud-eu/web.git tmp/assets/core/origin; \
+@@ -40,7 +40,7 @@
+ 
+ .PHONY: download-assets
+ download-assets:
+-	git clean -xfd assets
++#	git clean -xfd assets
+ 	curl --fail -slL -o- https://github.com/opencloud-eu/web/releases/download/$(WEB_ASSETS_VERSION)/web.tar.gz | tar xzf - -C assets/core/
+ 
+ .PHONY: ci-node-save-licenses

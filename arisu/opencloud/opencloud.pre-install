@@ -1,0 +1,6 @@
+#!/bin/sh
+
+addgroup -S opencloud 2>/dev/null
+adduser -S -D -h /var/lib/opencloud -s /sbin/nologin -G opencloud -g opencloud opencloud 2>/dev/null
+
+exit 0

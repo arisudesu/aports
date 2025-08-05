@@ -1,0 +1,48 @@
+# Contributor:
+pkgname=opencloud
+pkgver=3.2.1
+pkgrel=0
+pkgdesc="Secure and private way to store, access, and share your files"
+url="https://opencloud.eu/"
+license="Apache-2.0"
+arch="all"
+makedepends="bash curl go pnpm"
+subpackages="$pkgname-openrc"
+pkgusers="$pkgname"
+pkggroups="$pkgname"
+install="$pkgname.pre-install"
+options="net !check"
+source="https://github.com/opencloud-eu/opencloud/archive/v$pkgver/opencloud-$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+	build.patch
+	"
+
+export GOTOOLCHAIN=go1.24.5+auto
+export GOFLAGS="$GOFLAGS -trimpath -mod=readonly -modcacherw"
+export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
+export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
+export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
+
+build() {
+	make generate
+	make -C opencloud build
+}
+
+package() {
+	install -Dm755 "$builddir"/opencloud/bin/opencloud -t "$pkgdir"/usr/bin/
+
+	mkdir -p "$pkgdir"/etc/opencloud
+	chown $pkgusers:$pkggroups "$pkgdir"/etc/opencloud
+	chmod 700 "$pkgdir"/etc/opencloud
+	
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+}
+
+sha512sums="
+ba558525e862fcc9cc8b8fe1f4965ec34700135c2e2bfba2a9a9089857967ed7e2073634f2dad892ac2f1b1a3ff42cbd256cc27566a289ac62d97475732400ff  opencloud-3.2.1.tar.gz
+661ceaa5681c36b40e60988904bce913beb33e39ffceaf1552c4e10c772392936c37fa2ba872e0e1b3ecb9b805d66b4276726855cdddc1bd9f9d73af414bca42  opencloud.initd
+3e6113e0257cc543f5309267fe040c4947bfa39113332d5bd90ac0833ee81ab471a8b1a4d8c97fb679e9628aa2ea32614e5c1ce729efd62f5e2be682f69d8498  opencloud.confd
+3354d3ba30d293a71f780517befe4a35320f00db4f6e8f0bfdca4a203e82a1af68d838f7bcab7e58cf3829b5dc7426059461e3a4eb0361c7bf128fa860711f02  build.patch
+"
