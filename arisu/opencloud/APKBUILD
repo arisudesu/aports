@@ -1,7 +1,7 @@
 # Contributor:
 pkgname=opencloud
 pkgver=3.2.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Secure and private way to store, access, and share your files"
 url="https://opencloud.eu/"
 license="Apache-2.0"
@@ -23,6 +23,12 @@ export GOFLAGS="$GOFLAGS -trimpath -mod=readonly -modcacherw"
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
 export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
 export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
+
+prepare() {
+	default_prepare
+
+	sed -i 's|^\(\tLatestTag\) = .*|\1 = "'$pkgver'"|' pkg/version/version.go
+}
 
 build() {
 	make generate
