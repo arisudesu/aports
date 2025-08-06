@@ -32,5 +32,5 @@ start_pre() {
 }
 
 init() {
-	su $command_user -s /bin/sh -c "$command init"	
+	su $command_user -s /bin/sh -c "$command init"
 }
