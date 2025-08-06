@@ -1,7 +1,7 @@
 # Contributor:
 pkgname=opencloud
 pkgver=3.2.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Secure and private way to store, access, and share your files"
 url="https://opencloud.eu/"
 license="Apache-2.0"
@@ -27,9 +27,7 @@ export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
 prepare() {
 	default_prepare
 
-	local gotoolchain=$(go -C "$srcdir" run getrelease.go go1.24.)
-	go install golang.org/dl/"$gotoolchain"@latest
-	go env -w GOTOOLCHAIN="$gotoolchain"
+	go env -w GOTOOLCHAIN="$(go -C "$srcdir" run getrelease.go go1.24.)"
 
 	sed -i 's|^\(\tLatestTag\) = .*|\1 = "'$pkgver'"|' pkg/version/version.go
 }
