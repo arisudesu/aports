@@ -1,7 +1,7 @@
 # Contributor:
 pkgname=opencloud
 pkgver=3.2.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Secure and private way to store, access, and share your files"
 url="https://opencloud.eu/"
 license="Apache-2.0"
@@ -16,9 +16,9 @@ source="https://github.com/opencloud-eu/opencloud/archive/v$pkgver/opencloud-$pk
 	$pkgname.initd
 	$pkgname.confd
 	build.patch
+	getrelease.go
 	"
 
-export GOTOOLCHAIN=go1.24.5+auto
 export GOFLAGS="$GOFLAGS -trimpath -mod=readonly -modcacherw"
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
 export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
@@ -26,6 +26,10 @@ export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
 
 prepare() {
 	default_prepare
+
+	local gotoolchain=$(go -C "$srcdir" run getrelease.go go1.24.)
+	go install golang.org/dl/"$gotoolchain"@latest
+	go env -w GOTOOLCHAIN="$gotoolchain"
 
 	sed -i 's|^\(\tLatestTag\) = .*|\1 = "'$pkgver'"|' pkg/version/version.go
 }
@@ -51,4 +55,5 @@ ba558525e862fcc9cc8b8fe1f4965ec34700135c2e2bfba2a9a9089857967ed7e2073634f2dad892
 661ceaa5681c36b40e60988904bce913beb33e39ffceaf1552c4e10c772392936c37fa2ba872e0e1b3ecb9b805d66b4276726855cdddc1bd9f9d73af414bca42  opencloud.initd
 3e6113e0257cc543f5309267fe040c4947bfa39113332d5bd90ac0833ee81ab471a8b1a4d8c97fb679e9628aa2ea32614e5c1ce729efd62f5e2be682f69d8498  opencloud.confd
 3354d3ba30d293a71f780517befe4a35320f00db4f6e8f0bfdca4a203e82a1af68d838f7bcab7e58cf3829b5dc7426059461e3a4eb0361c7bf128fa860711f02  build.patch
+9454ca0b7573fb1e185c2e2b0b2bbc91b2cd6f6a42422abe339967cfe8fafa8039a9461920bd446cb20e50d03734d851387badb1713c0cc8d3ddd6abe820f711  getrelease.go
 "
