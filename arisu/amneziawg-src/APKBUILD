@@ -2,9 +2,9 @@
 # Maintainer:
 pkgname=amneziawg-src
 pkgver=1.0.20241112
-_kver=6.12.34
+_kver=6.12.43
 _modname=amneziawg
-pkgrel=5
+pkgrel=6
 pkgdesc="A contemporary version of the popular VPN protocol, WireGuard"
 url="https://amnezia.org"
 arch="all"
@@ -36,5 +36,5 @@ package() {
 
 sha512sums="
 0d0dde7324088f2f3eff2cff9679e7f25b20d9796462da9949e6fc97af320a43ace27f9dfbd32cc2995449a68b313d6877ced6aa0ad3fbd02f15b1338e62fdff  amneziawg-linux-kernel-module-1.0.20241112.tar.gz
-b20afb64443656ab01d070405cda010a7133a157917ec33a9dec4957787c93ef9da9de277f08382be12ead66088d00919dc77a238e8618c443a9bf2bb7fa1224  linux-6.12.34.tar.xz
+39c8282ff2ad87cef9f2a7805fad1f628aa12413b71008cff6d10261273387491ff38cac35d42ae542a5db8cb41c6545426b31c03f9df203b58b120be299086f  linux-6.12.43.tar.xz
 "
