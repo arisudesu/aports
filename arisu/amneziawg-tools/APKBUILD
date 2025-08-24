@@ -10,7 +10,11 @@ url="https://amnezia.org"
 # is a kernel project i think it is safe to assume it is GPL-2.0-only just
 # like the kernel.
 license="GPL-2.0-only"
-_awg_quick_deps="iproute2 bash openresolv"
+_awg_quick_deps="
+	bash
+	cmd:resolvconf
+	iproute2
+	"
 makedepends="libmnl-dev $_awg_quick_deps"
 depends="$pkgname-awg $pkgname-awg-quick"
 install="$pkgname-openrc.post-install"
@@ -25,6 +29,7 @@ options="!check"
 source="
 	amneziawg-tools-$pkgver.tar.gz::https://github.com/amnezia-vpn/amneziawg-tools/archive/refs/tags/v$pkgver.tar.gz
 	awg-quick.initd
+	wg-quick-different-sudo.patch
 	"
 
 build() {
@@ -61,4 +66,5 @@ _split() {
 sha512sums="
 cc6ba3ea8cc4e8ec75c690926e3bc37e942e3019ba4a560efecab70103a1c91be48db6066ef250ad1cbf6bb6cff50dac1d2980147ec1eed860872133068b0595  amneziawg-tools-1.0.20241018.tar.gz
 858f86d0b37de72356d3f8f80482516fa648a0e4b1467f2916eacf8d66919f2fc8a37223d439f022ff09a97aee87519a4b87b646049b9bec49bb31260942ff46  awg-quick.initd
+bf623fa31215d2e90078950dc18b9e69004235aa2e87cc4910ce710ba51119fb76c345a9cce1d0aa946fad1ccb5a40e9734ff3424e8d2d16cd00c1f1e0fe4916  wg-quick-different-sudo.patch
 "
