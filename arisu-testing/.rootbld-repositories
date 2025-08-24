@@ -1,3 +1,0 @@
-$mirror/v$ALPINE_VERSION/main
-$mirror/v$ALPINE_VERSION/community
-../v$ALPINE_VERSION/arisu-testing
