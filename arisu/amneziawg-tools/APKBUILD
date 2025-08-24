@@ -1,8 +1,8 @@
 # Contributor:
 # Maintainer:
 pkgname=amneziawg-tools
-pkgver=1.0.20241018
-pkgrel=4
+pkgver=1.0.20250706
+pkgrel=0
 pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: userspace tools"
 arch="all"
 url="https://amnezia.org"
@@ -64,7 +64,7 @@ _split() {
 }
 
 sha512sums="
-cc6ba3ea8cc4e8ec75c690926e3bc37e942e3019ba4a560efecab70103a1c91be48db6066ef250ad1cbf6bb6cff50dac1d2980147ec1eed860872133068b0595  amneziawg-tools-1.0.20241018.tar.gz
-858f86d0b37de72356d3f8f80482516fa648a0e4b1467f2916eacf8d66919f2fc8a37223d439f022ff09a97aee87519a4b87b646049b9bec49bb31260942ff46  awg-quick.initd
+556ae1547e69c98188cd16870c53219bc56e6e9dcd8cf8a95e9dd4e3cfa3d3894aaad5d33e5c30fea8da041b25aa465036409840fbce34fde8922bcc05d18561  amneziawg-tools-1.0.20250706.tar.gz
+f392e7dd8446e9a2dca09b0c1156db0cc0cadb3be08802b70e80b2e1d88aa85bb5a496c390bbea2d12be86db30312ba6919a1325352716271c927008b620e2d8  awg-quick.initd
 bf623fa31215d2e90078950dc18b9e69004235aa2e87cc4910ce710ba51119fb76c345a9cce1d0aa946fad1ccb5a40e9734ff3424e8d2d16cd00c1f1e0fe4916  wg-quick-different-sudo.patch
 "
