@@ -1,6 +1,6 @@
 # Contributor:
 # Maintainer:
-# Origin: https://git.alpinelinux.org/aports/tree/community/qemu-openrc/APKBUILD?h=3.21-stable
+# Origin: https://git.alpinelinux.org/aports/tree/community/qemu-openrc/APKBUILD?h=3.22-stable
 _origpkgname=qemu-openrc
 _origpkgrel=1
 pkgname=$_origpkgname-custom
