@@ -1,0 +1,23 @@
+# Contributor:
+pkgname=minecraft-server-openrc
+pkgver=0.1.0
+pkgrel=0
+pkgdesc="OpenRC init scripts for Minecraft server"
+url="https://github.com/arisudesu/aports/tree/master/arisu/minecraft-server"
+arch="all"
+license="MIT"
+source="minecraft-server.initd
+	minecraft-server.confd
+	"
+install="$pkgname.pre-install"
+options="!check"
+
+package() {
+	install -D -m755 "$srcdir"/minecraft-server.initd "$pkgdir"/etc/init.d/minecraft-server
+	install -D -m644 "$srcdir"/minecraft-server.confd "$pkgdir"/etc/conf.d/minecraft-server
+}
+
+sha512sums="
+1fd99946b15139fafe81fdba7edcb93d60c9e0646b9b325b27891f45f2b2017e009c41587664e6adf7cc9ead30141a6eecfc27d76249dcd1cb7b00bb05f00561  minecraft-server.initd
+fde506bf597a3b543baaeac57c20196c02851a65095b75c606fa5a3fb87ff2c2b018462fd8668054a50bf26023df92b5c5f119fae3908ba39eeb7693cc36492d  minecraft-server.confd
+"

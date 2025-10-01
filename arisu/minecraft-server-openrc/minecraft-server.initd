@@ -1,0 +1,111 @@
+#!/sbin/openrc-run
+# Copyright 1999-2021 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+if [ "$RC_SVCNAME" = "minecraft-server" ]; then
+	instance="default"
+else
+	instance="${RC_SVCNAME#minecraft-server.}"
+fi
+
+minecraft_path="/var/lib/minecraft"
+minecraft_path_instance="$minecraft_path/$instance"
+minecraft_logs="/var/log/minecraft"
+minecraft_logs_instance="$minecraft_logs/$instance"
+
+name="Minecraft Server (World: $instance)"
+pidfile="/run/minecraft-server.$instance.pid"
+directory="$minecraft_path_instance"
+
+description_attach="Attaches to the session (interactive console) of the Minecraft server"
+extra_started_commands="attach"
+
+dtach_tmpfile="$(mktemp -u)"
+
+command="/usr/bin/dtach"
+command_background="true"
+command_args="-N $dtach_tmpfile /usr/bin/java $JAVA_OPTS -jar $MINECRAFT_JAR nogui"
+command_group="minecraft"
+command_user="minecraft"
+
+shutdown_timeout=30
+
+depend() {
+	use net
+}
+
+start_pre() {
+	checkpath -d -m 0750 -o "$command_user" "$minecraft_path"
+	checkpath -d -o "$command_user" "$minecraft_path_instance"
+
+	checkpath -f -o "$command_user" "$minecraft_path_instance"/eula.txt
+	echo "eula=true" > "$minecraft_path_instance"/eula.txt
+
+	checkpath -d -m 0750 -o "$command_user" "$minecraft_logs"
+	checkpath -d -o "$command_user" "$minecraft_logs_instance"
+
+	if [ ! -L "$minecraft_path_instance"/logs ]; then
+		cd "$minecraft_path_instance" && ln -s ../../../log/minecraft/"$instance" logs
+	fi
+
+	if [ -z "$MINECRAFT_JAR" ]; then
+		eerror "You must define 'MINECRAFT_JAR' in '/etc/conf.d/$RC_SVCNAME'!"
+		return 1
+	fi
+
+	if [ ! -f "$MINECRAFT_JAR" ]; then
+		eerror "You must place the Minecraft server jar in '$MINECRAFT_JAR'!"
+		return 1
+	fi
+}
+
+stop() {
+	local count=0
+	local retval=0
+
+	ebegin "Stopping $name"
+
+	_erase=$(printf \\x15)
+	_lfeed=$(printf \\x0A)
+	_input="${_erase}stop${_lfeed}"
+
+	pidnumber="$(cat "$pidfile")"
+	dtach_tmpfile="$(cat "/proc/$pidnumber/cmdline" | tr '\0' ' ' | awk '{print $3}')"
+
+	if kill -0 "$pidnumber" 2>/dev/null && [ -S "$dtach_tmpfile" ]; then
+		echo "$_input" | eval "$command" -p "$dtach_tmpfile"
+
+		count="$shutdown_timeout"
+
+		printf "   Waiting $count seconds for the server shutdown "
+		while kill -0 "$pidnumber" 2>/dev/null && [ $count -gt 0 ]; do
+			sleep 1
+			printf '.'
+			count=$(( count - 1 ))
+		done
+		printf '\n'
+	fi
+
+	if [ $count -eq 0 ]; then
+		ewarn 'Failed to shutdown the server on console, stopping it with force'
+
+		start-stop-daemon --stop \
+			--quiet --retry 'SIGTERM/5/SIGKILL/5' \
+			--pidfile "$pidfile" --exec "$command"
+		retval="$?"
+	fi
+
+	eend $retval
+}
+
+attach() {
+	pidnumber="$(cat "$pidfile")"
+	dtach_tmpfile="$(cat "/proc/$pidnumber/cmdline" | tr '\0' ' ' | awk '{print $3}')"
+
+	if kill -0 "$pidnumber" 2>/dev/null && [ -S "$dtach_tmpfile" ]; then
+		eval "$command" -a "$dtach_tmpfile" "$DTACH_OPTS"
+	else
+		eerror "The determined socket file for dtach could not be found!"
+		eerror "Did the process crash?"
+	fi
+}
