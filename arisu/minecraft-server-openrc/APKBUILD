@@ -1,11 +1,12 @@
 # Contributor:
 pkgname=minecraft-server-openrc
 pkgver=0.1.0
-pkgrel=0
+pkgrel=1
 pkgdesc="OpenRC init scripts for Minecraft server"
 url="https://github.com/arisudesu/aports/tree/master/arisu/minecraft-server"
 arch="all"
 license="MIT"
+depends="dtach java-jre-headless"
 source="minecraft-server.initd
 	minecraft-server.confd
 	"
