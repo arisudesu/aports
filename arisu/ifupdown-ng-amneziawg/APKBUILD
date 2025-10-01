@@ -16,7 +16,6 @@ source="amneziawg
 install_if="ifupdown-ng $depends"
 
 package() {
-	echo install -Dm755 "$srcdir"/amneziawg "$pkgdir"/usr/libexec/ifupdown-ng/amneziawg
 	install -Dm755 "$srcdir"/amneziawg "$pkgdir"/usr/libexec/ifupdown-ng/amneziawg
 }
 
@@ -25,7 +24,6 @@ quick() {
 	depends="amneziawg-tools-awg-quick"
 	install_if="ifupdown-ng $depends"
 
-	echo install -Dm755 "$srcdir"/amneziawg-quick "$subpkgdir"/usr/libexec/ifupdown-ng/amneziawg-quick
 	install -Dm755 "$srcdir"/amneziawg-quick "$subpkgdir"/usr/libexec/ifupdown-ng/amneziawg-quick
 }
 
