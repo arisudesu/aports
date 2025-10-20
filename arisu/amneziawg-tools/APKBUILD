@@ -1,8 +1,8 @@
 # Contributor:
 # Maintainer:
 pkgname=amneziawg-tools
-pkgver=1.0.20241018
-pkgrel=4
+pkgver=1.0.20250903
+pkgrel=0
 pkgdesc="A contemporary version of the popular VPN protocol, WireGuard: userspace tools"
 arch="all"
 url="https://amnezia.org"
@@ -59,6 +59,6 @@ _split() {
 }
 
 sha512sums="
-cc6ba3ea8cc4e8ec75c690926e3bc37e942e3019ba4a560efecab70103a1c91be48db6066ef250ad1cbf6bb6cff50dac1d2980147ec1eed860872133068b0595  amneziawg-tools-1.0.20241018.tar.gz
+a69f3911b18cd5abb73ba1f695802c87205ed6be10be035a5d06ca266c5de3c0b88c0aeac7670bc302112288f1b58937608e7b2835a22d2b4fc45a8f63b218ad  amneziawg-tools-1.0.20250903.tar.gz
 858f86d0b37de72356d3f8f80482516fa648a0e4b1467f2916eacf8d66919f2fc8a37223d439f022ff09a97aee87519a4b87b646049b9bec49bb31260942ff46  awg-quick.initd
 "
