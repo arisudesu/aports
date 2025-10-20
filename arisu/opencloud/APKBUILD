@@ -1,6 +1,6 @@
 # Contributor:
 pkgname=opencloud
-pkgver=3.3.0
+pkgver=3.5.0
 pkgrel=0
 pkgdesc="Secure and private way to store, access, and share your files"
 url="https://opencloud.eu/"
@@ -49,7 +49,7 @@ package() {
 }
 
 sha512sums="
-3a974b45ba386539c8885885ad2b538506b68a03359dfffee8d83c6c57062d5203c2f619827b9b839fd248749d7d5a6ea894e0255fd88b4e9f449b7012c7146f  opencloud-3.3.0.tar.gz
+d97d4fbd65f95034efc7f957e6f0a070dff45268491dfe484a12e663d438b82c6c54c21e56bab41f305f591922d80198db6d7196ff09ffb5d7edfef6c9b79f80  opencloud-3.5.0.tar.gz
 18cd300e49c9aaffd23594e9508aa5cf90224fc4fbcd0176fc04137fdad311a492c10806fd709422c86fdedc5901eb3ac34185cf266788329d6126e3b699bccd  opencloud.initd
 068eb5f72a55ae46fbfaf930985c8cef8e40eaef4e6455aa07cc2d02bfb79ad3847d517dfe69edda82b7fb744368919de32216067637ee2faa949d3ed73636da  opencloud.confd
 3354d3ba30d293a71f780517befe4a35320f00db4f6e8f0bfdca4a203e82a1af68d838f7bcab7e58cf3829b5dc7426059461e3a4eb0361c7bf128fa860711f02  build.patch
