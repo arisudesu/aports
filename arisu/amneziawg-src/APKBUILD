@@ -1,10 +1,10 @@
 # Contributor:
 # Maintainer:
 pkgname=amneziawg-src
-pkgver=1.0.20241112
-_kver=6.12.43
+pkgver=1.0.20251009
+_kver=6.12.53
 _modname=amneziawg
-pkgrel=6
+pkgrel=0
 pkgdesc="A contemporary version of the popular VPN protocol, WireGuard"
 url="https://amnezia.org"
 arch="all"
@@ -12,20 +12,13 @@ license="GPL-2.0"
 depends="akms"
 makedepends="rsync"
 install="$pkgname.post-deinstall"
-source="amneziawg-linux-kernel-module-$pkgver.tar.gz::https://github.com/amnezia-vpn/amneziawg-linux-kernel-module/archive/refs/tags/v$pkgver.tar.gz
-	https://cdn.kernel.org/pub/linux/kernel/v${_kver%%.*}.x/linux-$_kver.tar.xz
-	"
+source="amneziawg-linux-kernel-module-$pkgver.tar.gz::https://github.com/amnezia-vpn/amneziawg-linux-kernel-module/archive/refs/tags/v$pkgver.tar.gz"
 builddir="$srcdir"/amneziawg-linux-kernel-module-$pkgver
 options="!check" # No tests available
 
-build() {
-	ln -sfn "$srcdir"/linux-"$_kver" "$builddir"/src/kernel
-	make -C "$builddir"/src apply-patches
-}
-
 package() {
 	mkdir -p "$pkgdir"/usr/src/$_modname-$pkgver
-	rsync --recursive --exclude=*.cmd --exclude=*.rules --exclude=*.d --exclude=*.ko --exclude=*.mod --exclude=*.mod.c --exclude=*.o --exclude=modules.order --exclude=.patches.stamp src/generated/ "$pkgdir"/usr/src/$_modname-$pkgver
+	rsync --recursive --exclude=*.cmd --exclude=*.rules --exclude=*.d --exclude=*.ko --exclude=*.mod --exclude=*.mod.c --exclude=*.o --exclude=modules.order --exclude=.patches.stamp src/ "$pkgdir"/usr/src/$_modname-$pkgver
 
 	cat > "$pkgdir"/usr/src/$_modname-$pkgver/AKMBUILD <<-EOF
 		modname=$_modname
@@ -35,6 +28,5 @@ package() {
 }
 
 sha512sums="
-0d0dde7324088f2f3eff2cff9679e7f25b20d9796462da9949e6fc97af320a43ace27f9dfbd32cc2995449a68b313d6877ced6aa0ad3fbd02f15b1338e62fdff  amneziawg-linux-kernel-module-1.0.20241112.tar.gz
-39c8282ff2ad87cef9f2a7805fad1f628aa12413b71008cff6d10261273387491ff38cac35d42ae542a5db8cb41c6545426b31c03f9df203b58b120be299086f  linux-6.12.43.tar.xz
+1c807df0e54fa79f50c055229fe75a4289febd272c304528f5cfe57271aecfe2fb5a8c4480c82f527e1b0272bfae73e03b5b06119769e98d37bb4df65844f2ff  amneziawg-linux-kernel-module-1.0.20251009.tar.gz
 "
