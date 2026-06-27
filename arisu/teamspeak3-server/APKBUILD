@@ -1,8 +1,8 @@
 # Contributor:
 # Maintainer:
 pkgname=teamspeak3-server
-pkgver=3.13.7
-pkgrel=6
+pkgver=3.13.8
+pkgrel=0
 pkgdesc="A server software for hosting quality voice communication via the internet"
 url="https://www.teamspeak.com"
 arch="x86_64"
@@ -85,7 +85,7 @@ postgresql() {
 }
 
 sha512sums="
-e3b2da0fd59b117659aef5f86fd79f8670724a535c22bd994a02af27ffd7edc9e8bbd6b79406268443d5add24f83d50ccd82128696cf82ec003db612de40e67b  teamspeak3-server_linux_alpine-3.13.7.tar.bz2
+a8b97d8dbc143b59c6457da63634d4b6d4eabaf2d9445b23b05e13d6f90e96d13d2a291c0e97f8671423b8bc9c305f0e1bbb373b1860c0d089c173070fbe73de  teamspeak3-server_linux_alpine-3.13.8.tar.bz2
 3fa8c1639bce5faa2aebe95938e557b37d77e3130e343714891725545980c49277960b16281ee1c48e78c6722875bb56e5be872799a51f12e76a718e82efe5ac  ts3server.ini
 f89da662279e050c7ce6056f9871aacecfb8b0f7aa6837c5c93236f9c942334d7949b400e671a663f98a9f994219a4cc410db6577672b79e92bf6a49b9f7da29  ts3server_mariadb.ini.sample
 60993fa58beb07f3304e7603abe91dba2e23e3f6868a6e2894bf55e1e79c358defd1a08523e6ade16d1eb1042aad1783c76c2dff8e6ce282d08d77800c3357db  ts3db_mariadb.ini.sample
