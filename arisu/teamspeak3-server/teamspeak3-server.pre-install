@@ -1,0 +1,6 @@
+#!/bin/sh
+
+addgroup -S teamspeak 2>/dev/null
+adduser -S -D -H -h /var/lib/teamspeak -s /sbin/nologin -G teamspeak -g teamspeak teamspeak 2>/dev/null
+
+exit 0

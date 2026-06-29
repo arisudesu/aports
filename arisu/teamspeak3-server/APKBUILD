@@ -1,0 +1,95 @@
+# Contributor:
+# Maintainer:
+pkgname=teamspeak3-server
+pkgver=3.13.8
+pkgrel=0
+pkgdesc="A server software for hosting quality voice communication via the internet"
+url="https://www.teamspeak.com"
+arch="x86_64"
+license="Apache-2.0 Boost-1.0 BSD LGPL-2.1 LGPL-3 MIT custom"
+install="$pkgname.pre-install"
+subpackages="
+	$pkgname-doc
+	$pkgname-openrc
+	$pkgname-db-common:db_common
+	$pkgname-mariadb
+	$pkgname-postgresql
+	"
+source="https://files.teamspeak-services.com/releases/server/$pkgver/${pkgname}_linux_alpine-$pkgver.tar.bz2
+	ts3server.ini
+	ts3server_mariadb.ini.sample
+	ts3db_mariadb.ini.sample
+	ts3server_postgresql.ini.sample
+	ts3db_postgresql.ini.sample
+	$pkgname.initd
+	"
+builddir="$srcdir"/${pkgname}_linux_alpine
+options="!check !tracedeps !fhs" # installs to /opt
+
+package() {
+	install -D -m755 -t "$pkgdir"/opt/$pkgname/ \
+		"$builddir"/ts3server \
+		"$builddir"/libts3_ssh.so \
+		"$builddir"/libts3db_sqlite3.so
+
+	install -D -m644 "$srcdir"/ts3server.ini "$pkgdir"/etc/$pkgname/ts3server.ini
+
+	install -d -m755 "$pkgdir"/opt/$pkgname/serverquerydocs
+	cp -r "$builddir"/serverquerydocs/* "$pkgdir"/opt/$pkgname/serverquerydocs/
+
+	install -d -m755 "$pkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/*.sql "$pkgdir"/opt/$pkgname/sql/
+	cp -r "$builddir"/sql/create_sqlite "$pkgdir"/opt/$pkgname/sql/
+
+	install -D -m644 "$builddir"/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+	install -D -m644 "$builddir"/CHANGELOG "$pkgdir"/usr/share/doc/$pkgname/CHANGELOG
+	install -d -m755 "$pkgdir"/usr/share/doc/$pkgname/ts3server
+	cp -r "$builddir"/doc/*.md "$builddir"/doc/*.txt "$pkgdir"/usr/share/doc/$pkgname/ts3server/
+	install -d -m755 "$pkgdir"/usr/share/doc/$pkgname/html
+	cp -r "$builddir"/doc/serverquery/* "$pkgdir"/usr/share/doc/$pkgname/html/
+
+	install -d -m755 "$pkgdir"/opt/bin
+	ln -s ../$pkgname/ts3server "$pkgdir"/opt/bin/
+
+	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+}
+
+db_common() {
+	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/updates_and_fixes "$subpkgdir"/opt/$pkgname/sql/
+}
+
+mariadb() {
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-common=$pkgver-r$pkgrel"
+
+	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
+		"$builddir"/libts3db_mariadb.so \
+		"$builddir"/redist/libmariadb.so.2
+	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/create_mariadb "$subpkgdir"/opt/$pkgname/sql/
+	install -D -m644 -t "$subpkgdir"/etc/$pkgname/ \
+		"$srcdir"/ts3server_mariadb.ini.sample \
+		"$srcdir"/ts3db_mariadb.ini.sample
+}
+
+postgresql() {
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-db-common=$pkgver-r$pkgrel libpq"
+
+	install -D -m755 -t "$subpkgdir"/opt/$pkgname/ \
+		"$builddir"/libts3db_postgresql.so
+	install -d -m755 "$subpkgdir"/opt/$pkgname/sql
+	cp -r "$builddir"/sql/create_postgresql "$subpkgdir"/opt/$pkgname/sql/
+	install -D -m644 -t "$subpkgdir"/etc/$pkgname/ \
+		"$srcdir"/ts3server_postgresql.ini.sample \
+		"$srcdir"/ts3db_postgresql.ini.sample
+}
+
+sha512sums="
+a8b97d8dbc143b59c6457da63634d4b6d4eabaf2d9445b23b05e13d6f90e96d13d2a291c0e97f8671423b8bc9c305f0e1bbb373b1860c0d089c173070fbe73de  teamspeak3-server_linux_alpine-3.13.8.tar.bz2
+3fa8c1639bce5faa2aebe95938e557b37d77e3130e343714891725545980c49277960b16281ee1c48e78c6722875bb56e5be872799a51f12e76a718e82efe5ac  ts3server.ini
+f89da662279e050c7ce6056f9871aacecfb8b0f7aa6837c5c93236f9c942334d7949b400e671a663f98a9f994219a4cc410db6577672b79e92bf6a49b9f7da29  ts3server_mariadb.ini.sample
+60993fa58beb07f3304e7603abe91dba2e23e3f6868a6e2894bf55e1e79c358defd1a08523e6ade16d1eb1042aad1783c76c2dff8e6ce282d08d77800c3357db  ts3db_mariadb.ini.sample
+97c01b120b5f48fe72c150bacf013ec7cb94c7626bf6354437fb04d9ac5326b59b44e299d41e278db9cc5992e21100aed114239b58a855f1874010a1f828db9e  ts3server_postgresql.ini.sample
+803763b93d2cc7e7b111ca9649deb6e582e1f0228bd9acd677f8d3f914cbed745381663562ada655618bdb955c07f0cdf02bdd4d8ce02861f082ca9aef8e480f  ts3db_postgresql.ini.sample
+13805b15048cfa776db2411eab9614a2be5fcff135c3e16cbc7fc24cfc0ddbbe91260c38aef52b5d79c68701817596adeeb1de13cf43c62c4a26563ae4b67bd9  teamspeak3-server.initd
+"
