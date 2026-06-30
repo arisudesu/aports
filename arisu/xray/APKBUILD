@@ -1,0 +1,22 @@
+# Contributor:
+# Maintainer:
+pkgname=xray
+pkgver=26.3.27
+pkgrel=0
+pkgdesc="Platform for building proxies to bypass network restrictions"
+url="https://github.com/XTLS/Xray-core"
+arch="x86_64"
+license="MPL-2.0"
+source="https://github.com/XTLS/Xray-core/releases/download/v$pkgver/Xray-linux-64.zip"
+options="!check !fhs" # installs to /opt
+
+package() {
+	install -D -m755 -t "$pkgdir"/opt/$pkgname/ "$srcdir"/xray
+
+	install -d -m755 "$pkgdir"/opt/bin
+	ln -s ../$pkgname/xray "$pkgdir"/opt/bin/
+}
+
+sha512sums="
+e8bc40a0687cac184bbe4b5c1f047e69064ccedc489fb25e208889ae287bbf8736dff16b108d68fc00dc33edc8bb53502e47a9698a277f4f51b67b83d899e518  Xray-linux-64.zip
+"
