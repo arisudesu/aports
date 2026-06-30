@@ -1,0 +1,15 @@
+#!/bin/sh
+[ -n "$VERBOSE" ] && set -x
+[ -z "$IF_AMNEZIAWG_CONFIG_PATH" ] && IF_AMNEZIAWG_CONFIG_PATH="/etc/amnezia/amneziawg/$IFACE.conf"
+
+case "$PHASE" in
+create)
+	${MOCK} ip link add $IFACE type amneziawg
+	;;
+pre-up)
+	${MOCK} awg setconf $IFACE $IF_AMNEZIAWG_CONFIG_PATH
+	;;
+destroy)
+	${MOCK} ip link delete dev $IFACE
+	;;
+esac
