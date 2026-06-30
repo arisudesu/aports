@@ -24,6 +24,7 @@ subpackages="
 	$pkgname-awg:_split
 	$pkgname-awg-quick:_split:noarch
 	$pkgname-openrc
+	$pkgname-systemd
 	"
 options="!check"
 source="
@@ -43,7 +44,7 @@ package() {
 		DESTDIR="$pkgdir" \
 		WITH_BASHCOMPLETION=yes \
 		WITH_WGQUICK=yes \
-		WITH_SYSTEMDUNITS=no \
+		WITH_SYSTEMDUNITS=yes \
 		install
 
 	find "$builddir"/contrib -name '.gitignore' -delete
