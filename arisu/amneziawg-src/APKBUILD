@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=amneziawg-src
-pkgver=1.0.20251009
+pkgver=1.0.20260611
 _modname=amneziawg
 pkgrel=0
 pkgdesc="A contemporary version of the popular VPN protocol, WireGuard"
