@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cat 1>&2 <<EOF
+*
+* To use the AmneziaWG OpenRC script, you need to create a symbolic link to it with the configuration name:
+*     ln -s /etc/init.d/awg-quick /etc/init.d/awg-quick.awg0
+* And then call it instead:
+*     rc-service awg-quick.awg0 start
+*
+EOF
