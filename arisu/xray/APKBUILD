@@ -2,21 +2,43 @@
 # Maintainer:
 pkgname=xray
 pkgver=26.3.27
-pkgrel=0
+pkgrel=1
 pkgdesc="Platform for building proxies to bypass network restrictions"
 url="https://github.com/XTLS/Xray-core"
 arch="x86_64"
 license="MPL-2.0"
-source="https://github.com/XTLS/Xray-core/releases/download/v$pkgver/Xray-linux-64.zip"
+install="$pkgname.pre-install $pkgname.pre-upgrade"
+subpackages="
+	$pkgname-doc
+	$pkgname-openrc
+	"
+pkggroups=xray
+source="https://github.com/XTLS/Xray-core/releases/download/v$pkgver/Xray-linux-64.zip
+	xray.json.example
+	xray.initd
+	"
 options="!check !fhs" # installs to /opt
 
 package() {
-	install -D -m755 -t "$pkgdir"/opt/$pkgname/ "$srcdir"/xray
+	install -D -m755 "$srcdir"/xray "$pkgdir"/opt/$pkgname/xray
+
+	install -d -m750 -o root -g xray "$pkgdir"/etc/xray
+	install -D -m640 -o root -g xray "$srcdir"/xray.json.example "$pkgdir"/etc/xray/xray.json.example
+
+	install -D -m644 "$srcdir"/README.md "$pkgdir"/usr/share/doc/$pkgname/README.md
+
+	for f in geoip.dat geosite.dat; do
+		install -D -m644 "$srcdir"/$f "$pkgdir"/usr/share/$pkgname/$f
+	done
 
 	install -d -m755 "$pkgdir"/opt/bin
 	ln -s ../$pkgname/xray "$pkgdir"/opt/bin/
+
+	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
 }
 
 sha512sums="
 e8bc40a0687cac184bbe4b5c1f047e69064ccedc489fb25e208889ae287bbf8736dff16b108d68fc00dc33edc8bb53502e47a9698a277f4f51b67b83d899e518  Xray-linux-64.zip
+c4d38661e115277ba6a59e0f0b33a84c6118de431f115b3171c6746c779dcbb709ac3e7d9af5c3f188948fcebb1343fc9de043a432c6574926d260da7d4291bc  xray.json.example
+e6b734fd9d198188d535470f2b593b75e579c654db1ffb71a651024f80bb2a9f83e5b06ac2f88c001574fdd49b408f326157c43f5e44a9cffa473272f85a1136  xray.initd
 "

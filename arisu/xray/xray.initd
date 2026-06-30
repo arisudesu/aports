@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+
+config="/etc/xray/xray.json"
+name="Xray Server"
+
+pidfile="/run/$RC_SVCNAME.pid"
+
+command="/opt/bin/xray"
+command_args="-c /etc/xray/xray.json"
+command_background=true
+command_user=xray:xray
+
+depend() {
+	need net
+	after firewall
+}
