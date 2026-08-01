@@ -6,7 +6,7 @@ name="Xray Server"
 pidfile="/run/$RC_SVCNAME.pid"
 
 command="/opt/bin/xray"
-command_args="-c /etc/xray/xray.json"
+command_args="-c ${config}"
 command_background=true
 command_user=xray:xray
 
