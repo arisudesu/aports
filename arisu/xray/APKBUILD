@@ -15,7 +15,7 @@ subpackages="
 pkggroups=xray
 source="https://github.com/XTLS/Xray-core/releases/download/v$pkgver/Xray-linux-64.zip
 	xray.json.example
-	xray.initd
+	$pkgname.initd
 	"
 options="!check !fhs" # installs to /opt
 
