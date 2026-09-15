@@ -44,7 +44,7 @@ _custom_plugins="inputs.cpu
 	inputs.prometheus
 	inputs.prometheus.tags
 	inputs.sensors
-	inputs.smart
+	inputs.smartctl
 	inputs.swap
 	inputs.system
 	inputs.whois
