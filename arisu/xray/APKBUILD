@@ -1,8 +1,8 @@
 # Contributor:
 # Maintainer:
 pkgname=xray
-pkgver=26.3.27
-pkgrel=3
+pkgver=26.10.31
+pkgrel=0
 pkgdesc="Platform for building proxies to bypass network restrictions"
 url="https://github.com/XTLS/Xray-core"
 arch="x86_64"
@@ -13,7 +13,7 @@ subpackages="
 	$pkgname-openrc
 	"
 pkggroups=xray
-source="https://github.com/XTLS/Xray-core/releases/download/v$pkgver/Xray-linux-64.zip
+source="Xray-linux-64-$pkgver.zip::https://github.com/XTLS/Xray-core/releases/download/v$pkgver/Xray-linux-64.zip
 	xray.json.example
 	$pkgname.initd
 	"
@@ -38,7 +38,7 @@ package() {
 }
 
 sha512sums="
-e8bc40a0687cac184bbe4b5c1f047e69064ccedc489fb25e208889ae287bbf8736dff16b108d68fc00dc33edc8bb53502e47a9698a277f4f51b67b83d899e518  Xray-linux-64.zip
+d507c15ae81f4d658b8bd70070c1e17085b46c0512f4f4030d0e35240bbbe18caecbe7911ecbce679da9a52ea8a410dad03a090ac437594d4feb235648df62ef  Xray-linux-64-26.10.31.zip
 c4d38661e115277ba6a59e0f0b33a84c6118de431f115b3171c6746c779dcbb709ac3e7d9af5c3f188948fcebb1343fc9de043a432c6574926d260da7d4291bc  xray.json.example
 4ca95ba0a1531710954f279262bd3a83e3e9c3d82363dd0ba9c0fd871c245dfa3ab0a90ef613855fd76bb5ad34bf710861884a31053caf41d3d85300637a0799  xray.initd
 "
