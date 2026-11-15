@@ -1,0 +1,22 @@
+---
+services:
+  abuild:
+    build:
+      args:
+        - ABUILD_GID=${ABUILD_GID}
+        - ABUILD_UID=${ABUILD_UID}
+        - ALPINE_VERSION=${ALPINE_VERSION}
+        - SIGNING_KEY_NAME=${SIGNING_KEY_NAME:-signing_key}
+    privileged: true
+    secrets:
+      - signing_key.rsa
+      - signing_key.rsa.pub
+    volumes:
+      - ./:/abuild/aports
+      - ${HOST_PACKAGES_DIR:-./packages}:/abuild/packages
+
+secrets:
+  signing_key.rsa:
+    file: ${HOST_SIGNING_KEY_PATH:-signing_key.rsa}
+  signing_key.rsa.pub:
+    file: ${HOST_SIGNING_PUBKEY_PATH:-signing_key.rsa.pub}
