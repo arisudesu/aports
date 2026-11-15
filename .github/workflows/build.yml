@@ -3,6 +3,7 @@ name: Build packages
 on:
   push:
     branches:
+      - "master"
       - "release-*"
   workflow_dispatch:
 
@@ -16,29 +17,36 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: "Prepare aports"
+      - name: "Checkout aports"
         uses: actions/checkout@v4
         with:
           path: aports
 
-      - name: "Prepare packages"
+      - name: "Checkout packages"
         uses: actions/checkout@v4
         with:
           ref: packages
           path: packages
 
-      - name: "Run build"
+      - name: "Build packages"
         run: |
-          mkdir -m 0700 .abuild
-          echo "${{ secrets.PACKAGER_PRIVKEY }}" > .abuild/arisudesu@users.noreply.github.com-66758c7b.rsa
-          echo "${{ secrets.PACKAGER_PRIVKEY_PUB }}" > .abuild/arisudesu@users.noreply.github.com-66758c7b.rsa.pub
+          echo "${{ secrets.PACKAGER_PRIVKEY }}" > signing_key.rsa
+          echo "${{ secrets.PACKAGER_PRIVKEY_PUB }}" > signing_key.rsa.pub
 
           cd aports
-          export ALPINE_VERSION=$(cat github_build_target)
-          export PACKAGER_PRIVKEY=$PWD/../.abuild/arisudesu@users.noreply.github.com-66758c7b.rsa
-          ./github-build.sh $(cat github_build_repos)
 
-      - name: Commit packages
+          export ABUILD_GID=$(id -g)
+          export ABUILD_UID=$(id -u)
+          export HOST_PACKAGES_DIR=../packages
+          export HOST_SIGNING_KEY_PATH=../signing_key.rsa
+          export HOST_SIGNING_PUBKEY_PATH=../signing_key.rsa.pub
+          export SIGNING_KEY_NAME=arisudesu@users.noreply.github.com-66758c7b
+
+          while read repo; do
+            docker compose run --build abuild $repo
+          done < .repositories
+
+      - name: "Commit packages"
         run: |
           cd packages
           git config --global user.name 'github-actions[bot]'
