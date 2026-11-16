@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=xray
-pkgver=26.10.31
+pkgver=26.11.9
 pkgrel=0
 pkgdesc="Platform for building proxies to bypass network restrictions"
 url="https://github.com/XTLS/Xray-core"
@@ -38,7 +38,7 @@ package() {
 }
 
 sha512sums="
-d507c15ae81f4d658b8bd70070c1e17085b46c0512f4f4030d0e35240bbbe18caecbe7911ecbce679da9a52ea8a410dad03a090ac437594d4feb235648df62ef  Xray-linux-64-26.10.31.zip
+9eb4e81887342a1a01de651bf31e8496817640c7e70c9f1b899a2c99432a305b0802415d80ab78f5628b380a5e2186dd04e3d16f168a1d1c05295af6623fac6d  Xray-linux-64-26.11.9.zip
 c4d38661e115277ba6a59e0f0b33a84c6118de431f115b3171c6746c779dcbb709ac3e7d9af5c3f188948fcebb1343fc9de043a432c6574926d260da7d4291bc  xray.json.example
 4ca95ba0a1531710954f279262bd3a83e3e9c3d82363dd0ba9c0fd871c245dfa3ab0a90ef613855fd76bb5ad34bf710861884a31053caf41d3d85300637a0799  xray.initd
 "
