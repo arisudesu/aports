@@ -12,12 +12,12 @@ RUN apk add abuild-rootbld alpine-sdk lua-aports \
 	&& adduser -u $ABUILD_UID -G abuild-user -D -h /abuild abuild-user \
 	&& adduser abuild-user abuild \
 	&& ln -s /run/secrets/signing_key.rsa.pub /etc/apk/keys/$SIGNING_KEY_NAME.rsa.pub \
-	&& { [ "$ALPINE_VERSION" = edge ] || ALPINE_VERSION="v$ALPINE_VERSION"; } \
+	&& { _version=$ALPINE_VERSION; [ "$_version" = edge ] || _version="v$_version"; } \
 	&& cat > /docker-entrypoint.sh <<-EOF \
 	&& chmod +x /docker-entrypoint.sh
 		#!/bin/sh
-		export version=$ALPINE_VERSION
-		exec buildrepo -a /abuild/aports -d /abuild/packages/\$version -p -R "\$@"
+		export _version=$_version
+		exec buildrepo -a /abuild/aports -d /abuild/packages/$ALPINE_VERSION -p -R "\$@"
 	EOF
 
 USER abuild-user

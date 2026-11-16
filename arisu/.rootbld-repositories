@@ -1,3 +1,3 @@
-$mirror/$version/main
-$mirror/$version/community
+$mirror/$_version/main
+$mirror/$_version/community
 $REPODEST/arisu
